@@ -1,1 +1,10 @@
-<app-default-login-layout></app-default-login-layout>
+<app-default-login-layout
+  title="Login into your account"
+  primaryBtnText="Login Now"
+  secondaryBtnText="Signup Now"
+>
+  <form [formGroup]="loginForm">
+    <input type="text" placeholder="Email" />
+    <input type="password" placeholder="Password" />
+  </form>
+</app-default-login-layout>
