@@ -1,12 +1,21 @@
 <app-default-login-layout
   title="Login into your account"
-  primaryBtnText="Login Now"
+  primaryBtnText="Create Account"
   secondaryBtnText="Signup Now"
   (submit)="onSubmit()"
   (navigate)="navigate()"
-  [disablePrimaryBtn]="!loginForm.valid"
+  [disablePrimaryBtn]="!signupForm.valid"
 >
-  <form [formGroup]="loginForm">
+  <form [formGroup]="signupForm">
+    <app-primary-input
+      formControlName="name"
+      inputName="name"
+      type="text"
+      placeholder="Your Name"
+      label="Name"
+    >
+    <i class="fas fa-user"></i>
+    </app-primary-input>
     <app-primary-input
       formControlName="email"
       inputName="email"

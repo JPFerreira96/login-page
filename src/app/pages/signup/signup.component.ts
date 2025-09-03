@@ -1,16 +1,29 @@
+// import { Component } from '@angular/core';
+
+// @Component({
+//   selector: 'app-signup',
+//   standalone: true,
+//   imports: [],
+//   templateUrl: './signup.component.html',
+//   styleUrl: './signup.component.scss'
+// })
+// export class SignupComponent {
+
+// }
+
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DefaultLoginLayoutComponent } from '../../components/default-login-layout/default-login-layout.component';
 import { PrimaryInputComponent } from '../../components/primary-input/primary-input.component';
-import { LoginService } from '../../core/services/login.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   providers: [
-    LoginService,
+    AuthService,
     ToastrService
   ],
   imports: [
@@ -18,19 +31,21 @@ import { LoginService } from '../../core/services/login.service';
     ReactiveFormsModule,
     PrimaryInputComponent
   ],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'] // Corrigi aqui
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.scss'] // Corrigi aqui
 })
 
-export class LoginComponent {
-  loginForm!: FormGroup;
+export class SignupComponent {
+  signupForm!: FormGroup;
 
   constructor(
     private router: Router,
-    private loginService: LoginService,
+    private authService: AuthService,
     private toastService: ToastrService // Adicionei aqui
   ) {
-    this.loginForm = new FormGroup({
+    this.signupForm = new FormGroup({
+      // name: new FormControl('', [Validators.required, Validators.name]),
+      name: new FormControl('', [Validators.required, Validators.minLength(2)]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
@@ -44,10 +59,10 @@ export class LoginComponent {
   // }
 
   onSubmit() {
-  this.loginService.login(this.loginForm.value.email, this.loginForm.value.password)
+  this.authService.signup({ email: this.signupForm.value.email, password: this.signupForm.value.password, name: this.signupForm.value.name })
     .subscribe({
       next: () => {
-        const role = this.loginForm.value.role;
+        const role = this.signupForm.value.role;
         this.router.navigate([role === 'ADMIN' ? '/admin' : '/dashboard']);
       },
       error: () => this.toastService.error('Usuário ou senha inválidos')
