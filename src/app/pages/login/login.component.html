@@ -1,10 +1,10 @@
 <app-default-login-layout
-  title="Login into your account"
-  primaryBtnText="Login Now"
-  secondaryBtnText="Signup Now"
+  title="Acesse sua conta"
+  primaryBtnText="Entrar"
+  secondaryBtnText="Criar conta"
   (submit)="onSubmit()"
   (navigate)="navigate()"
-  [disablePrimaryBtn]="!loginForm.valid"
+  [disablePrimaryBtn]="loginForm.invalid"
 >
   <form [formGroup]="loginForm">
     <app-primary-input
@@ -16,15 +16,16 @@
     >
       <i class="fas fa-envelope"></i>
     </app-primary-input>
+
+
     <app-primary-input
       formControlName="password"
       inputName="password"
       type="password"
-      placeholder="your password"
+      placeholder="sua senha"
       label="Senha"
     >
-      <i class="fas fa-key"></i>
+    <i class="fas fa-key"></i>
     </app-primary-input>
-    <span>Forgot your password?</span>
   </form>
 </app-default-login-layout>

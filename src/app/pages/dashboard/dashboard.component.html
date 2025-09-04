@@ -1,0 +1,91 @@
+<div class="layout">
+  <!-- Sidebar simples -->
+  <aside class="sidebar">
+    <div class="brand">moveIt</div>
+    <nav>
+      <a class="item active">Meus cartões</a>
+      <a class="item">Meus dados</a>
+      <a class="item">Minhas solicitações</a>
+      <a class="item">Compra de crédito</a>
+      <a class="item">Sair</a>
+    </nav>
+  </aside>
+
+  <!-- Conteúdo -->
+  <main class="content">
+    <header class="topbar">
+      <h1 class="title">Meus cartões</h1>
+      <div class="actions">
+        <button class="btn ghost">Vincular VEM Comum +</button>
+      </div>
+    </header>
+
+    <section class="cards-area">
+      <div class="info-row">
+        <span class="dot dot--blue"></span>
+        <span class="dot dot--gray"></span>
+      </div>
+
+      <!-- loading / erro -->
+      <div *ngIf="loading()" class="skeleton">Carregando…</div>
+      <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
+
+      <!-- slider -->
+      <div *ngIf="!loading() && !error()" class="slider">
+        <div class="slider__track"
+             [style.transform]="'translateX(' + (-index()*100) + '%)'">
+          <div class="slider__slide" *ngFor="let c of cards()">
+            <div class="card" [ngClass]="colorClass(c)">
+              <div class="card__brand">VEML</div>
+              <div class="card__type">{{ c.type | titlecase }}</div>
+
+              <div class="row">
+                <small>Seu saldo</small>
+                <button class="eye" (click)="showBalance.set(!showBalance())"
+                        [attr.aria-label]="showBalance() ? 'Ocultar saldo':'Mostrar saldo'">
+                  {{ showBalance() ? '👁' : '🙈' }}
+                </button>
+              </div>
+
+              <div class="balance">{{ maskedBalance(c) }}</div>
+
+              <div class="footer">
+                <span class="pill"
+                      [class.ok]="c.status==='ATIVO'">{{ c.status }}</span>
+                <span class="serial">{{ c.serial }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- nav -->
+        <div class="slider__nav">
+          <button class="nav-btn" (click)="prev()">‹</button>
+          <button class="nav-btn" (click)="next()">›</button>
+        </div>
+
+        <div class="slider__dots">
+          <button class="dot"
+                  *ngFor="let _ of cards(); let i = index"
+                  [class.active]="i===index()"
+                  (click)="index.set(i)"></button>
+        </div>
+      </div>
+
+      <p class="note">
+        <strong>Obs:</strong> Sua carteira de estudante tem validade. Se não
+        for atualizada antes do vencimento, não será possível recarregar.
+      </p>
+    </section>
+
+    <section class="services">
+      <h2>Serviços do cartão</h2>
+      <div class="grid">
+        <button class="svc">Compra de Crédito</button>
+        <button class="svc">Segunda Via</button>
+        <button class="svc">Bloquear</button>
+        <button class="svc">Atualização de Carteira</button>
+      </div>
+    </section>
+  </main>
+</div>
