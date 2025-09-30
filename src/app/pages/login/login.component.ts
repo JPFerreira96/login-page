@@ -101,11 +101,27 @@ onSubmit() {
 
   this.loginService.login(email, password).subscribe({
     next: (res) => {
+      console.log('Login response:', res); // Para debug
       this.auth.saveAuth(res, remember);   // ⬅️ escolhe session/local
-      const role = res.user.role;
-      this.router.navigate([role === 'ADMIN' ? '/admin' : '/dashboard']);
+      
+      // Verificação defensiva para evitar erro
+      const role = res?.user?.role;
+      
+      // Pequeno delay para garantir que o storage foi salvo
+      setTimeout(() => {
+        if (role) {
+          this.router.navigate([role === 'ADMIN' ? '/admin' : '/dashboard']);
+        } else {
+          // Fallback se não tiver role definido
+          console.warn('Role not found in response, redirecting to dashboard');
+          this.router.navigate(['/dashboard']);
+        }
+      }, 100);
     },
-    error: () => this.toastService.error('Usuário ou senha inválidos')
+    error: (err) => {
+      console.error('Login error:', err);
+      this.toastService.error('Usuário ou senha inválidos');
+    }
   });
 }
 

@@ -192,12 +192,23 @@ export class AuthService {
   }
 
   saveAuth(res: AuthResponse, remember = false) {
+    if (!res || !res.token) {
+      console.error('Invalid auth response:', res);
+      return;
+    }
+    
     const expFromJwt = this.decodeJwt(res.token)?.exp; // segundos
-    const expMs = expFromJwt ? expFromJwt * 1000 : (Date.now() + (res.expiresInMs ?? 0));
-    const data = { token: res.token, tokenType: res.tokenType, exp: expMs, user: res.user };
+    const expMs = expFromJwt ? expFromJwt * 1000 : (Date.now() + (res.expiresInMs ?? 3600000)); // 1h default
+    const data = { 
+      token: res.token, 
+      tokenType: res.tokenType || 'Bearer', 
+      exp: expMs, 
+      user: res.user || { id: 0, name: '', email: '', role: 'USER' }
+    };
 
     const store = remember ? localStorage : sessionStorage;
     store.setItem(this.KEY, JSON.stringify(data));
+    console.log('Auth saved successfully:', { remember, user: data.user });
   }
 
   private readAuth(): { token:string; exp:number; user:any } | null {
@@ -208,8 +219,20 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const auth = this.readAuth();
-    if (!auth?.token || !auth?.exp) return false;
-    if (Date.now() >= auth.exp) { this.logout(); return false; }
+    console.log('Checking authentication:', auth);
+    
+    if (!auth?.token || !auth?.exp) {
+      console.log('No token or expiration found');
+      return false;
+    }
+    
+    if (Date.now() >= auth.exp) { 
+      console.log('Token expired, logging out');
+      this.logout(); 
+      return false; 
+    }
+    
+    console.log('User is authenticated');
     return true;
   }
 
