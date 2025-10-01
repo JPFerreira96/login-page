@@ -49,36 +49,235 @@
 .skeleton, .error { padding: 18px; border-radius: 12px; background: #fff; box-shadow: 0 1px 8px rgba(0,0,0,.05); }
 .error { border: 1px solid #ef4444; color:#991b1b; }
 
-.slider { position: relative; overflow: hidden; }
-.slider__track { display: flex; transition: transform .35s ease; }
-.slider__slide { min-width: 100%; padding: 10px; box-sizing: border-box; }
+// ===== CARTÃO VEM REAL - DIMENSÕES CORRETAS =====
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 40px auto;
+  position: relative;
+}
 
-.card {
-  height: 240px; border-radius: 18px; padding: 18px; color: #fff;
-  box-shadow: 0 12px 30px rgba(0,0,0,.15);
-  display: grid; grid-template-rows: auto auto auto 1fr;
-  .card__brand { font-size: 22px; font-weight: 800; opacity:.95; }
-  .card__type { font-weight: 700; letter-spacing:.5px; margin-top: 4px; }
-  .row { display:flex; align-items:center; justify-content:space-between; margin-top: 14px;
-    small { opacity:.9; }
-    .eye { background: rgba(255,255,255,.2); border:none; border-radius: 8px; padding: 2px 8px; cursor:pointer; }
+.slider {
+  width: 340px;  // Largura fixa para o cartão
+  height: 215px; // Altura fixa para o cartão
+  position: relative;
+  
+  &__track {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .balance { font-size: 28px; font-weight: 800; margin-top: 4px; }
-  .footer { display:flex; align-items:center; justify-content:space-between; margin-top: auto; font-size: 13px; }
-  .pill { padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.25); }
-  .pill.ok { background: rgba(34,197,94,.35); }
-  .serial { opacity:.9; font-weight: 600; letter-spacing:.3px; }
+
+  &__slide {
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__nav {
+    position: absolute;
+    top: 50%;
+    width: 120%;
+    left: -10%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 10;
+
+    .nav-btn {
+      pointer-events: all;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+    }
+  }
+
+  &__dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    justify-content: center;
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &.active {
+        background: #3b82f6;
+        transform: scale(1.3);
+      }
+    }
+  }
 }
 
-.card--purple {
-  background: linear-gradient(135deg, var(--primary), var(--primary-600));
+// CARTÃO COM DIMENSÕES REAIS 85.60mm × 53.98mm (proporção ISO/IEC 7810)
+.card {
+  width: 340px;    // 85.60mm convertido para pixels (3.97px/mm)
+  height: 215px;   // 53.98mm convertido para pixels
+  border-radius: 12px;
+  padding: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  }
+
+  // Cores específicas por tipo de cartão VEM
+  &.card--comum {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  }
+
+  &.card--estudantil {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  }
+
+  &.card--trabalhador {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0;
+  }
+
+  &__brand {
+    font-size: 14px;
+    font-weight: 700;
+    opacity: 0.9;
+    letter-spacing: 1.2px;
+  }
+
+  &__type {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-align: right;
+  }
+
+  &__number {
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 12px 0;
+    opacity: 0.95;
+    letter-spacing: 1.5px;
+  }
+
+  &__balance-section {
+    margin-top: auto;
+
+    .balance-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+
+      small {
+        font-size: 11px;
+        opacity: 0.8;
+        font-weight: 500;
+      }
+
+      .eye-btn {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 11px;
+
+        &:hover {
+          background: rgba(255,255,255,0.3);
+        }
+      }
+    }
+
+    .balance {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      font-size: 9px;
+      font-weight: 600;
+
+      &.active {
+        background: rgba(34, 197, 94, 0.3);
+      }
+
+      i {
+        font-size: 6px;
+      }
+    }
+
+    .card-id {
+      font-size: 8px;
+      opacity: 0.7;
+      font-family: 'Courier New', monospace;
+    }
+  }
 }
-.card--orange {
-  background: linear-gradient(135deg, #ef7044, var(--orange));
-}
-.card--teal {
-  background: linear-gradient(135deg, #14b8a6, var(--teal));
-}
+
+// Estilos antigos removidos para evitar conflito - usando apenas os novos estilos definidos acima
+
+// Classes antigas removidas - usando as novas classes .card--comum, .card--estudantil, .card--trabalhador
 
 .slider__nav {
   position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; pointer-events:none;
@@ -94,6 +293,114 @@
 }
 
 .note { color: var(--muted); margin: 16px 4px 28px; }
+
+.empty-state {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 1px 8px rgba(0,0,0,.05);
+}
+
+.no-cards {
+  h3 {
+    margin: 0 0 12px;
+    font-size: 24px;
+    color: var(--text);
+  }
+  
+  p {
+    margin: 0 0 24px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+}
+
+.request-form {
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto;
+  
+  h3 {
+    margin: 0 0 24px;
+    font-size: 20px;
+    color: var(--text);
+    text-align: center;
+  }
+  
+  .field {
+    margin-bottom: 20px;
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #fff;
+      
+      &:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.1);
+      }
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+  }
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &.primary {
+    background: var(--primary);
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: var(--primary-600);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  &.ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid #e5e7eb;
+    
+    &:hover:not(:disabled) {
+      border-color: var(--muted);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
 
 .services {
   margin-top: 24px;

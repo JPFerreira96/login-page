@@ -1,0 +1,30 @@
+<div class="layout">
+      <!-- Sidebar simples -->
+      <aside class="sidebar">
+        <div class="brand">UrbanPass</div>
+        <nav>
+          <a class="item" [class.active]="isActive('/dashboard/cards')" (click)="navigateTo('/dashboard/cards')">
+            Meus cartões
+          </a>
+          <a class="item" [class.active]="isActive('/dashboard/profile')" (click)="navigateTo('/dashboard/profile')">
+            Meus dados
+          </a>
+          <a class="item" [class.active]="isActive('/dashboard/requests')" (click)="navigateTo('/dashboard/requests')">
+            Minhas solicitações
+          </a>
+          <a class="item" [class.active]="isActive('/dashboard/credits')" (click)="navigateTo('/dashboard/credits')">
+            Compra de crédito
+          </a>
+          <!-- <hr style="margin: 12px 0; border: 1px solid rgba(255,255,255,0.1);">
+          <a class="item" [class.active]="isActive('/dashboard/debug')" (click)="navigateTo('/dashboard/debug')" style="color: #f59e0b;">
+            🔍 Debug API
+          </a> -->
+          <a class="item" (click)="logout()">Sair</a>
+        </nav>
+      </aside>
+
+      <!-- Conteúdo dinâmico -->
+      <main class="content">
+        <router-outlet />
+      </main>
+    </div>

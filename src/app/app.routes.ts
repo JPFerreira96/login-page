@@ -34,12 +34,44 @@ export const routes: Routes = [
   { path: 'login',  component: LoginComponent,  canMatch: [guestCanMatch] },
   { path: 'signup', component: SignupComponent, canMatch: [guestCanMatch] },
 
-  // Proteger dashboard: precisa estar logado
+  // Dashboard com subrotas
   {
     path: 'dashboard',
     loadComponent: () =>
-      import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
-    canMatch: [authCanMatch],        // 👈 use o guard aqui
+      import('./components/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    canMatch: [authCanMatch],
+    children: [
+      { 
+        path: '', 
+        redirectTo: 'cards', 
+        pathMatch: 'full' 
+      },
+      {
+        path: 'cards',
+        loadComponent: () =>
+          import('./pages/cards/cards.component').then(m => m.CardsComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./pages/profile/profile.component').then(m => m.ProfileComponent)
+      },
+      {
+        path: 'requests',
+        loadComponent: () =>
+          import('./pages/requests/requests.component').then(m => m.RequestsComponent)
+      },
+      {
+        path: 'credits',
+        loadComponent: () =>
+          import('./pages/credits/credits.component').then(m => m.CreditsComponent)
+      },
+      {
+        path: 'debug',
+        loadComponent: () =>
+          import('./pages/debug/debug.component').then(m => m.DebugComponent)
+      }
+    ]
   },
 
   { path: '**', redirectTo: 'login' },

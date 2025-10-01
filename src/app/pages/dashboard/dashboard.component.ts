@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Card, CardService } from '../../core/services/card.service';
+import { Card, CardService, CardType } from '../../core/services/card.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -16,9 +17,16 @@ export class DashboardComponent {
   cards = signal<Card[]>([]);
   index = signal(0);
   showBalance = signal(false);
+  showRequestForm = signal(false);
+  requestingCard = signal(false);
 
   // pega o card visível (opcional)
   current = computed(() => this.cards()[this.index()] ?? null);
+
+  // formulário para solicitar cartão
+  requestForm = new FormGroup({
+    cardType: new FormControl<CardType | ''>('', [Validators.required])
+  });
 
   constructor(private cardsApi: CardService, private router: Router) {
     this.load();
@@ -29,11 +37,8 @@ export class DashboardComponent {
     this.error.set(null);
     this.cardsApi.getMyCards().subscribe({
       next: (data) => {
-        // fallback: se vier vazio, deixa um mock para ver o layout
-        this.cards.set(data?.length ? data : [
-          { id:1, type: 'TRABALHADOR', serial: '90.04.01987473-3', status: 'ATIVO', balance: 42.50 },
-          { id:2, type: 'ESTUDANTIL',  serial: '90.03.01391738-7', status: 'ATIVO', balance: 0 },
-        ]);
+        console.log('🔍 DADOS DOS CARTÕES RECEBIDOS:', data); // DEBUG
+        this.cards.set(data || []);
         this.index.set(0);
         this.loading.set(false);
       },
@@ -58,10 +63,10 @@ export class DashboardComponent {
   // estilos de cor por tipo
   colorClass(card: Card) {
     switch (card.type) {
-      case 'COMUM':       return 'card--purple';
-      case 'ESTUDANTIL':  return 'card--orange';
-      case 'TRABALHADOR': return 'card--teal';
-      default:            return 'card--purple';
+      case 'COMUM':       return 'card--comum';
+      case 'ESTUDANTE':   return 'card--estudantil';
+      case 'TRABALHADOR': return 'card--trabalhador';
+      default:            return 'card--comum';
     }
   }
 
@@ -69,5 +74,36 @@ export class DashboardComponent {
     if (!this.showBalance()) return 'R$ ***';
     const v = (card.balance ?? 0).toFixed(2).replace('.', ',');
     return `R$ ${v}`;
+  }
+
+  showCardRequestForm() {
+    this.showRequestForm.set(true);
+  }
+
+  hideCardRequestForm() {
+    this.showRequestForm.set(false);
+    this.requestForm.reset();
+  }
+
+  requestCard() {
+    if (this.requestForm.valid) {
+      this.requestingCard.set(true);
+      
+      const cardType = this.requestForm.get('cardType')?.value as CardType;
+      
+      this.cardsApi.requestCard(cardType).subscribe({
+        next: () => {
+          this.requestingCard.set(false);
+          this.hideCardRequestForm();
+          // Recarregar cartões após solicitar
+          this.load();
+        },
+        error: (err) => {
+          console.error('Erro ao solicitar cartão:', err);
+          this.requestingCard.set(false);
+          this.error.set('Erro ao solicitar cartão. Tente novamente.');
+        }
+      });
+    }
   }
 }

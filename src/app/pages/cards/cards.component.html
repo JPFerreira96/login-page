@@ -1,23 +1,5 @@
-<div class="layout">
-  <!-- Sidebar simples -->
-  <aside class="sidebar">
-    <div class="brand">UrbanPass</div>
-    <nav>
-      <a class="item active">Meus cartões</a>
-      <a class="item">Meus dados</a>
-      <a class="item">Minhas solicitações</a>
-      <a class="item">Compra de crédito</a>
-      <a class="item">Sair</a>
-    </nav>
-  </aside>
-
-  <!-- Conteúdo -->
-  <main class="content">
-    <header class="topbar">
+<header class="topbar">
       <h1 class="title">Meus cartões</h1>
-      <!-- <div class="actions">
-        <button class="btn ghost">Vincular VEM Comum +</button>
-      </div> -->
     </header>
 
     <section class="cards-area">
@@ -30,57 +12,64 @@
       <div *ngIf="loading()" class="skeleton">Carregando…</div>
       <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
 
-      <!-- Se tem cartões, mostra o slider centralizado -->
-      <div *ngIf="!loading() && !error() && cards().length > 0" class="slider-container">
-        <div class="slider">
-          <div class="slider__track"
-               [style.transform]="'translateX(' + (-index()*100) + '%)'">
-            <div class="slider__slide" *ngFor="let c of cards()">
-              <div class="card" [ngClass]="colorClass(c)">
-                <div class="card__header">
-                  <div class="card__brand">UrbanPass</div>
-                  <div class="card__type">{{ c.type | titlecase }}</div>
+      <!-- Se tem cartões, mostra o slider -->
+      <div *ngIf="!loading() && !error() && cards().length > 0" class="slider">
+        <div class="slider__track"
+             [style.transform]="'translateX(' + (-index()*100) + '%)'">
+          <div class="slider__slide" *ngFor="let c of cards()">
+            <div class="card" [ngClass]="colorClass(c)">
+              <div class="card__header">
+                <div class="card__brand">
+                  <img class="urbanPassLogo" src="assets/svg/urbanPassLogo.png" alt="UrbanPass">
                 </div>
-
-                <div class="card__number">
-                  {{ c.numeroCartao || c.serial || 'Nº não informado' }}
-                  <!-- DEBUG: {{ c.numeroCartao }} | {{ c.serial }} | {{ c.id }} -->
-                </div>
-
-                <div class="card__balance-section">
-                  <div class="balance-row">
-                    <small>Seu saldo</small>
-                    <button class="eye-btn" (click)="showBalance.set(!showBalance())"
-                            [attr.aria-label]="showBalance() ? 'Ocultar saldo':'Mostrar saldo'">
-                      <i [class]="showBalance() ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
-                    </button>
-                  </div>
+                <div class="card__type">{{ c.type | titlecase }}</div>
+                <button class="card__delete" (click)="confirmRemoveCard(c)" title="Remover cartão">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              
+              <!-- Número do cartão movido para cima do saldo conforme a referência -->
+              <div class="card__number">
+                {{ c.serial }}
+              </div>
+              
+              <div class="row">
+                <div class="saldo-container">
+                  <small>Seu saldo</small>
                   <div class="balance">{{ maskedBalance(c) }}</div>
                 </div>
-
-                <div class="card__footer">
-                  <span class="status-pill" [class.active]="c.status==='ATIVO'">
-                    <i class="fas fa-circle"></i>
-                    {{ c.status }}
-                  </span>
-                  <span class="card-id">ID: {{ c.id.substring(0, 8) }}</span>
+                <div class="eye-container">
+                  <button class="eye" (click)="showBalance.set(!showBalance())"
+                          [attr.aria-label]="showBalance() ? 'Ocultar saldo':'Mostrar saldo'">
+                    <i [class]="showBalance() ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+                  </button>
+                  <!-- Status diretamente abaixo do ícone do olho com indicador de cor -->
+                  <div class="status-indicator">
+                    <span class="status-circle" [class.active]="c.status === 'ATIVO'"></span>
+                    <span class="status-text">{{ c.status === 'ATIVO' ? 'ativo' : 'inativo' }}</span>
+                  </div>
                 </div>
               </div>
+              
+              <!-- Footer mantido para garantir posicionamento correto -->
             </div>
           </div>
         </div>
 
-        <!-- nav -->
-        <div class="slider__nav">
-          <button class="nav-btn" (click)="prev()">‹</button>
-          <button class="nav-btn" (click)="next()">›</button>
-        </div>
-
-        <div class="slider__dots">
-          <button class="dot"
+        <!-- controles de navegação estilo UrbanPass -->
+        <div class="slider-controls">
+          <button class="nav-btn" (click)="prev()">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="dots">
+            <span class="dot"
                   *ngFor="let _ of cards(); let i = index"
                   [class.active]="i===index()"
-                  (click)="index.set(i)"></button>
+                  (click)="index.set(i)"></span>
+          </div>
+          <button class="nav-btn" (click)="next()">
+            <i class="fas fa-chevron-right"></i>
+          </button>
         </div>
       </div>
 
@@ -106,6 +95,12 @@
                 <option value="ESTUDANTE">Estudantil</option>
                 <option value="TRABALHADOR">Trabalhador</option>
               </select>
+            </div>
+            
+            <div class="field">
+              <label for="name">Nome do Cartão:</label>
+              <input id="name" type="text" formControlName="name" class="input"
+                     placeholder="Ex: Meu cartão estudante">
             </div>
 
             <div class="form-actions">
@@ -137,5 +132,3 @@
         <button class="svc">Atualização de Carteira</button>
       </div>
     </section>
-  </main>
-</div>

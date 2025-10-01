@@ -1,0 +1,434 @@
+// ESTILOS DO COMPONENTE PROFILE - URBANPASS
+// Inspirado no layout VEM mas adaptado para o UrbanPass
+
+.topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  
+  .title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #1f2937;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+// Estados de loading e alertas
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: #6b7280;
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-weight: 500;
+  
+  i {
+    font-size: 18px;
+  }
+  
+  &.alert-error {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+  }
+  
+  &.alert-success {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+  }
+}
+
+// Container principal
+.profile-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+// Navegação por abas
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid #e5e7eb;
+  
+  .tab-button {
+    padding: 16px 24px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+    
+    &:hover {
+      color: #374151;
+      background-color: #f9fafb;
+    }
+    
+    &.active {
+      color: #e85d2b;
+      border-bottom-color: #e85d2b;
+      background-color: #fff;
+    }
+  }
+}
+
+// Card principal
+.card {
+  background: #fff;
+  border-radius: 0 0 16px 16px;
+  padding: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #e5e7eb;
+  border-top: none;
+  min-height: 500px;
+}
+
+// Cabeçalho das seções
+.section-header {
+  background: #3b82f6;
+  color: white;
+  padding: 16px 32px;
+  margin: 0;
+  
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Grade de formulário
+.form-grid {
+  padding: 32px;
+}
+
+// Grupos de campos
+.field-group {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #f3f4f6;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  .field-label {
+    flex: 0 0 200px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .field-value {
+    flex: 1;
+    font-size: 16px;
+    color: #1f2937;
+    font-weight: 500;
+  }
+}
+
+// Campos editáveis
+.editable-form {
+  width: 100%;
+}
+
+.field-group.editable {
+  .input-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    .field-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 16px;
+      color: #1f2937;
+      transition: all 0.2s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+      
+      &.error {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+      }
+    }
+    
+    .edit-icon {
+      background: transparent;
+      border: none;
+      color: #6b7280;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        color: #3b82f6;
+        background-color: #f3f4f6;
+      }
+    }
+  }
+}
+
+// Seletor de tema
+.theme-selector {
+  flex: 1;
+  
+  .field-select {
+    width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    color: #6b7280;
+    
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+  }
+}
+
+// Erros de validação
+.field-error {
+  flex: 1;
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 4px;
+  
+  span {
+    display: block;
+  }
+}
+
+// Ações do formulário
+.form-actions {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f3f4f6;
+}
+
+// Formulário de senha
+.password-form {
+  padding: 32px;
+  
+  .field-group {
+    display: block;
+    margin-bottom: 24px;
+    padding: 0;
+    border: none;
+    
+    .field-label {
+      display: block;
+      margin-bottom: 8px;
+      flex: none;
+      color: #374151;
+      font-weight: 500;
+    }
+    
+    .field-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 16px;
+      
+      &:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+      
+      &.error {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+      }
+    }
+  }
+}
+
+// Botões
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  
+  i {
+    font-size: 14px;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  &.btn-primary {
+    background-color: #3b82f6;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+  }
+  
+  &.btn-danger {
+    background-color: #dc2626;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background-color: #b91c1c;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Zona de perigo
+.danger-zone {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid #fecaca;
+  
+  .field-group {
+    border-bottom: none;
+    
+    .field-label {
+      color: #dc2626;
+    }
+  }
+}
+
+// Placeholder para abas não implementadas
+.placeholder-content {
+  padding: 60px 32px;
+  text-align: center;
+  
+  p {
+    color: #6b7280;
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .topbar {
+    .title {
+      font-size: 24px;
+    }
+    
+    .subtitle {
+      font-size: 14px;
+    }
+  }
+  
+  .tabs {
+    .tab-button {
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+  }
+  
+  .form-grid {
+    padding: 20px;
+  }
+  
+  .field-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    
+    .field-label {
+      flex: none;
+    }
+    
+    .field-value {
+      flex: none;
+      width: 100%;
+    }
+  }
+  
+  .field-group.editable {
+    .input-container {
+      width: 100%;
+      
+      .field-input {
+        flex: 1;
+      }
+    }
+  }
+  
+  .password-form {
+    padding: 20px;
+    
+    .field-group {
+      .field-input {
+        max-width: 100%;
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class DefaultLoginLayoutComponent {
 
-  @Input()  title: string = "";
+  @Input()  title: string = "Movemente-se, ande, explore e viva !";
   @Input()  primaryBtnText: string = "";
   @Input()  secondaryBtnText: string = "";
   @Input()  disablePrimaryBtn: boolean = true;

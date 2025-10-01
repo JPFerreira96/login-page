@@ -1,0 +1,63 @@
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #1f2430;
+  --muted: #8a8fa3;
+  --primary: #6d28d9;  // roxo
+  --primary-600: #5b21b6;
+  --orange: #e85d2b;
+  --teal: #0ea5a3;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr); /* Use minmax para evitar que o conteúdo ultrapasse o contêiner */
+  width: 100vw; /* Largura total da viewport */
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.sidebar {
+  background: #0f172a;
+  color: #e5e7eb;
+  padding: 24px 16px;
+  
+  .brand { 
+    font-size: 22px; 
+    font-weight: 700; 
+    letter-spacing: 0.5px; 
+    margin-bottom: 24px; 
+  }
+  
+  .item {
+    display: block; 
+    padding: 10px 12px; 
+    border-radius: 10px; 
+    color: #e5e7eb; 
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    
+    &.active, &:hover { 
+      background: rgba(255,255,255,0.08); 
+    }
+  }
+  
+  nav { 
+    display: grid; 
+    gap: 6px; 
+  }
+}
+
+.content { 
+  padding: 20px 24px;
+  overflow-y: auto; /* Permitir rolagem vertical apenas */
+  overflow-x: hidden; /* Prevenir rolagem horizontal */
+  height: 100vh;
+  max-height: 100vh;
+  box-sizing: border-box;
+  width: 100%; /* Garantir que a largura seja limitada ao contêiner pai */
+}

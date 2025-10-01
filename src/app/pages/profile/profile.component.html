@@ -1,0 +1,200 @@
+<header class="topbar">
+  <h1 class="title">Meus dados</h1>
+  <p class="subtitle">Visualize aqui seus dados pessoais</p>
+</header>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-state">
+  <div class="spinner"></div>
+  <p>Carregando dados...</p>
+</div>
+
+<!-- Error Alert -->
+<div *ngIf="error" class="alert alert-error">
+  <i class="fas fa-exclamation-triangle"></i>
+  {{ error }}
+</div>
+
+<!-- Success Alert -->
+<div *ngIf="success" class="alert alert-success">
+  <i class="fas fa-check-circle"></i>
+  {{ success }}
+</div>
+
+<section class="profile-content" *ngIf="!loading">
+  <!-- Navigation Tabs -->
+  <div class="tabs">
+    <button 
+      class="tab-button" 
+      [class.active]="activeTab === 'dados'" 
+      (click)="switchTab('dados')">
+      Dados
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="activeTab === 'endereco'" 
+      (click)="switchTab('endereco')">
+      Endereço
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="activeTab === 'alterarSenha'" 
+      (click)="switchTab('alterarSenha')">
+      Alterar senha
+    </button>
+  </div>
+
+  <!-- Dados Tab -->
+  <div class="card" *ngIf="activeTab === 'dados' && user">
+    <div class="section-header">
+      <h3>INFORMAÇÕES PESSOAIS</h3>
+    </div>
+
+    <div class="form-grid">
+      <!-- Campos não editáveis (apenas visualização) -->
+      <div class="field-group">
+        <label class="field-label">Nome</label>
+        <div class="field-value">{{ user.name || 'Não informado' }}</div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">CPF</label>
+        <div class="field-value">{{ user.cpf || 'Não informado' }}</div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Data de nascimento</label>
+        <div class="field-value">{{ user.birthDate || 'Não informado' }}</div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Nome da mãe</label>
+        <div class="field-value">{{ user.motherName || 'Não informado' }}</div>
+      </div>
+
+      <!-- Campo editável: Email -->
+      <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="editable-form">
+        <div class="field-group editable">
+          <label class="field-label" for="email">Email</label>
+          <div class="input-container">
+            <input 
+              type="email" 
+              id="email"
+              class="field-input"
+              formControlName="email"
+              [class.error]="emailControl?.invalid && emailControl?.touched">
+            <button 
+              type="button" 
+              class="edit-icon"
+              title="Editar email">
+              <i class="fas fa-edit"></i>
+            </button>
+          </div>
+          <div class="field-error" *ngIf="emailControl?.invalid && emailControl?.touched">
+            <span *ngIf="emailControl?.errors?.['required']">Email é obrigatório</span>
+            <span *ngIf="emailControl?.errors?.['email']">Email deve ter um formato válido</span>
+          </div>
+        </div>
+
+        <div class="field-group editable">
+          <label class="field-label">Telefone</label>
+          <div class="field-value">{{ user.phone || 'Não informado' }}</div>
+        </div>
+
+        <div class="field-group editable">
+          <label class="field-label">Tema</label>
+          <div class="theme-selector">
+            <select class="field-select">
+              <option value="padrao">PADRÃO</option>
+              <option value="escuro">ESCURO</option>
+              <option value="claro">CLARO</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="userForm.invalid || loading">
+            <i class="fas fa-save"></i>
+            {{ loading ? 'Salvando...' : 'Salvar alterações' }}
+          </button>
+        </div>
+      </form>
+
+      <!-- Excluir conta -->
+      <div class="danger-zone">
+        <div class="field-group">
+          <label class="field-label">Excluir</label>
+          <button 
+            type="button" 
+            class="btn btn-danger"
+            (click)="deleteAccount()"
+            [disabled]="loading">
+            <i class="fas fa-trash"></i>
+            Excluir conta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Endereço Tab (placeholder) -->
+  <div class="card" *ngIf="activeTab === 'endereco'">
+    <div class="section-header">
+      <h3>ENDEREÇO</h3>
+    </div>
+    <div class="placeholder-content">
+      <p>Funcionalidade de endereço será implementada em breve.</p>
+    </div>
+  </div>
+
+  <!-- Alterar Senha Tab -->
+  <div class="card" *ngIf="activeTab === 'alterarSenha'">
+    <div class="section-header">
+      <h3>ALTERAR SENHA</h3>
+    </div>
+
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="password-form">
+      <div class="field-group">
+        <label class="field-label" for="currentPassword">Senha atual</label>
+        <input 
+          type="password" 
+          id="currentPassword"
+          class="field-input"
+          formControlName="currentPassword"
+          [class.error]="currentPasswordControl?.invalid && currentPasswordControl?.touched"
+          placeholder="Digite sua senha atual">
+        <div class="field-error" *ngIf="currentPasswordControl?.invalid && currentPasswordControl?.touched">
+          <span *ngIf="currentPasswordControl?.errors?.['required']">Senha atual é obrigatória</span>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="newPassword">Nova senha</label>
+        <input 
+          type="password" 
+          id="newPassword"
+          class="field-input"
+          formControlName="newPassword"
+          [class.error]="newPasswordControl?.invalid && newPasswordControl?.touched"
+          placeholder="Digite sua nova senha">
+        <div class="field-error" *ngIf="newPasswordControl?.invalid && newPasswordControl?.touched">
+          <span *ngIf="newPasswordControl?.errors?.['required']">Nova senha é obrigatória</span>
+          <span *ngIf="newPasswordControl?.errors?.['minlength']">Nova senha deve ter pelo menos 6 caracteres</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="passwordForm.invalid || loading">
+          <i class="fas fa-key"></i>
+          {{ loading ? 'Alterando...' : 'Alterar senha' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

@@ -6,7 +6,11 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-
 }
 
-html, body { height: 100%; }
+html, body { 
+    height: 100%; 
+    overflow: hidden; /* Previne rolagem no nível do body */
+    margin: 0;
+    padding: 0;
+}
