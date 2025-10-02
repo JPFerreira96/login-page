@@ -40,6 +40,25 @@
   }
 }
 
+// ===== Responsividade Mobile e Tablet =====
+@media (max-width: 900px) {
+  .cards-area { max-width: 100%; }
+}
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .sidebar { width: 100%; }
+  .content { padding: 16px; }
+}
+@media (max-width: 540px) {
+  .sidebar { display: none; }
+  .topbar .title { font-size: 24px; }
+  .cards-area { padding: 0 16px; }
+  .services { padding: 0 16px; }
+  .slider, .card { width: 100%; height: auto; aspect-ratio: 340 / 215; }
+  .services .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .svc { padding: 16px; font-size: 14px; }
+}
+
 .cards-area { max-width: 980px; }
 .info-row { display:flex; gap:8px; margin-bottom: 10px; }
 .dot { width: 18px; height: 18px; border-radius: 6px; display:inline-block;
@@ -58,6 +77,11 @@
   width: 100%;
   margin: 40px auto;
   position: relative;
+}
+@media (max-width: 540px) {
+  .slider-container { margin: 20px 0; }
+  .slider__nav { width: 100%; left: 0; }
+  .slider__dots { margin-top: 12px; }
 }
 
 .slider {

@@ -1,0 +1,42 @@
+<div class="users-wrapper">
+  <h2>Lista de Usuários</h2>
+  <div *ngIf="loading()">Carregando usuários…</div>
+  <div *ngIf="error()" class="error">{{ error() }}</div>
+  <div *ngFor="let user of users()" class="user-item">
+    <div class="user-row" (click)="toggleExpand(user.id)">
+      <span>{{ user.name }}</span>
+      <span>{{ user.email }}</span>
+      <button *ngIf="expanded() === user.id" (click)="startEdit(user); $event.stopPropagation()">Editar</button>
+      <button (click)="deleteUser(user); $event.stopPropagation()">Remover</button>
+    </div>
+    <div *ngIf="expanded() === user.id" class="user-details">
+      <!-- Edit form -->
+      <form *ngIf="editUserId() === user.id" [formGroup]="updateForm" (ngSubmit)="saveUser(user)">
+        <input formControlName="name" placeholder="Nome" />
+        <input formControlName="email" placeholder="Email" />
+        <button type="submit" [disabled]="updateForm.invalid">Salvar</button>
+        <button type="button" (click)="cancelEdit()">Cancelar</button>
+      </form>
+      <!-- Cards list -->
+      <div class="cards-list">
+        <h3>Cartões</h3>
+        <div *ngFor="let card of user.cards">
+          <span>{{ card.nome }} ({{ card.numeroCartao }})</span>
+          <button (click)="removeCard(user.id, card)">Remover</button>
+          <button (click)="toggleCardStatus(user.id, card)">{{ card.status ? 'Desativar' : 'Ativar' }}</button>
+        </div>
+        <form [formGroup]="addCardForm" (ngSubmit)="addCard(user)">
+          <h4>Adicionar Cartão</h4>
+          <input formControlName="numeroCartao" placeholder="XXXX.XXXX.XXXX.XXXX" />
+          <input formControlName="nome" placeholder="Nome Cartão" />
+          <select formControlName="tipoCartao">
+            <option value="COMUM">Comum</option>
+            <option value="ESTUDANTE">Estudante</option>
+            <option value="TRABALHADOR">Trabalhador</option>
+          </select>
+          <button type="submit" [disabled]="addCardForm.invalid">Adicionar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

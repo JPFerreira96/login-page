@@ -18,6 +18,7 @@ export interface User {
 }
 
 export interface UpdateUserRequest {
+  name: string;
   email: string;
 }
 
@@ -76,6 +77,41 @@ export class UserService {
    */
   deleteUser(userId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${userId}`, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+  /** Lista todos os usuários (ADMIN) */
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}`, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+  /** Busca usuário por ID */
+  getUser(userId: string): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/${userId}`, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+  /** Atualiza usuário (ADMIN ou próprio usuário) */
+  updateUser(userId: string, userData: UpdateUserRequest): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${userId}`, userData, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+  /** Adiciona cartão a um usuário */
+  addCardToUser(userId: string, request: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${userId}/cards`, request, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+  /** Remove cartão de um usuário */
+  removeCardFromUser(userId: string, cardId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${userId}/cards/${cardId}`, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+  /** Ativa cartão de um usuário */
+  activateUserCard(userId: string, cardId: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${userId}/cards/${cardId}/activate`, null, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+  /** Desativa cartão de um usuário */
+  deactivateUserCard(userId: string, cardId: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${userId}/cards/${cardId}/deactivate`, null, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
 

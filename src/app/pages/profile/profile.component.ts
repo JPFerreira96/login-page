@@ -79,7 +79,8 @@ export class ProfileComponent implements OnInit {
     this.success = '';
 
     const updateData: UpdateUserRequest = {
-      email: this.userForm.get('email')?.value
+      email: this.userForm.get('email')?.value,
+      name: this.user?.name || ''
     };
 
     this.userService.updateProfile(updateData).subscribe({
