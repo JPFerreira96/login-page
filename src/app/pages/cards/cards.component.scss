@@ -2,19 +2,19 @@
 // Código para exibição de cartões UrbanPass
 
 .topbar {
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 10px;
-  
-  .title { 
-    font-size: 28px; 
-    margin: 0; 
+
+  .title {
+    font-size: 28px;
+    margin: 0;
   }
 }
 
-.cards-area { 
-  max-width: 1200px; 
+.cards-area {
+  max-width: 1200px;
   margin: 0 auto;
   padding-bottom: 10px;
   height: auto;
@@ -23,37 +23,38 @@
   width: 100%;
 }
 
-.info-row { 
-  display: flex; 
-  gap: 8px; 
-  margin-bottom: 10px; 
+.info-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
-.dot { 
-  width: 18px; 
-  height: 18px; 
-  border-radius: 6px; 
+.dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
   display: inline-block;
-  
-  &--blue { 
-    background: #3b82f6; 
-  } 
-  
-  &--gray { 
-    background: #94a3b8; 
+
+  &--blue {
+    background: #3b82f6;
+  }
+
+  &--gray {
+    background: #94a3b8;
   }
 }
 
-.skeleton, .error { 
-  padding: 18px; 
-  border-radius: 12px; 
-  background: #fff; 
-  box-shadow: 0 1px 8px rgba(0,0,0,.05); 
+.skeleton,
+.error {
+  padding: 18px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
 }
 
-.error { 
-  border: 1px solid #ef4444; 
-  color: #991b1b; 
+.error {
+  border: 1px solid #ef4444;
+  color: #991b1b;
 }
 
 // SLIDER BASE
@@ -63,18 +64,18 @@
   margin: 40px auto;
   max-width: 950px;
   width: 100%;
-  
+
   @media (max-width: 960px) {
     max-width: 100%;
   }
-  
+
   &__track {
     display: flex;
-    transition: transform 0.5s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    transition: transform 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
     width: 100%;
     padding: 0 20px;
   }
-  
+
   &__slide {
     flex: none;
     width: 100%;
@@ -95,7 +96,7 @@
   padding: 24px;
   border-radius: 16px;
   position: relative;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -109,49 +110,107 @@
   );
   overflow: hidden;
   box-sizing: border-box;
-  
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 40%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0) 40%
+    );
     z-index: 1;
     pointer-events: none;
   }
-  
+
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
   }
-  
+
   // Variantes de cor para tipos de cartões UrbanPass - cores diferentes
   &--comum {
     background-color: #e85d2b; /* Laranja */
   }
-  
+
   &--estudante {
-    background-color: #6C39DD; /* Roxo */
+    background-color: #6c39dd; /* Roxo */
   }
-  
+
   &--trabalhador {
     background-color: #0ea5a3; /* Verde-azulado */
   }
-  
+
   // Elementos internos do cartão
   &__header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 5px;
+    align-items: center;
+    margin-bottom: 16px;
     position: relative;
     z-index: 2;
-    
-    .title {
-      font-size: 16px;
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .urbanPassLogo {
+      max-width: 180px;
+      height: auto;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+    }
+
+    .card__alias {
+      font-size: 18px;
       font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
     }
   }
-  
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    // border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    // background: rgba(255, 255, 255, 0.2);
+    // border: 1px solid rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+    // box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+    &::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #36f26c;
+      box-shadow: 0 0 6px rgba(54, 242, 108, 0.7);
+    }
+
+    &--inactive {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.8);
+
+      &::before {
+        background: #ff6b6b;
+        box-shadow: 0 0 6px rgba(255, 107, 107, 0.65);
+      }
+    }
+  }
+
   &__delete {
     position: absolute;
     top: 0;
@@ -168,172 +227,149 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    
+
     &:hover {
       background: rgba(255, 255, 255, 0.4);
       transform: scale(1.1);
     }
-    
+
     &:active {
       transform: scale(0.95);
     }
   }
-  
-  &__brand {
-    display: flex;
+
+  &__type-badge {
+    display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
-    color: white;
-    padding: 0;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
     margin-bottom: 12px;
-    
-    .urbanPassLogo {
-      max-width: 130px;
-      height: auto;
-      display: block;
-      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    width: fit-content;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+    &::before {
+      content: "\f02c";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      font-size: 12px;
     }
   }
-  
-  &__type {
-    font-size: 14px;
-    opacity: 0.9;
-    font-weight: 500;
-    text-transform: uppercase;
-    margin-left: 8px;
-    display: none;
-  }
-  
-  /* Chip removido conforme solicitado */
 }
 
 // Estilos para a linha com o saldo
 .row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 4px;
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: 0;
   position: relative;
   z-index: 2;
-  margin-top: 40px;
   padding-left: 5px;
-  
+  padding-right: 5px;
+
   .saldo-container {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
   }
-  
+
   small {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
-    opacity: 0.95;
-    text-shadow: 0px 1px 2px rgba(0,0,0,0.25);
-    background-color: rgba(255, 255, 255, 0.15);
-    padding: 6px 12px;
-    border-radius: 20px;
+    opacity: 0.9;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.18);
+    padding: 6px 14px;
+    border-radius: 999px;
   }
-  
+
   .eye-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
   }
-  
-  .status-indicator {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.25);
-    padding: 5px 10px;
-    border-radius: 20px;
-    gap: 5px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: lowercase;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    
-    .status-circle {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #ff5e5e; /* vermelho para inativo */
-      box-shadow: 0 0 4px rgba(255, 94, 94, 0.6);
-      
-      &.active {
-        background-color: #4eff4a; /* verde para ativo */
-        box-shadow: 0 0 4px rgba(78, 255, 74, 0.6);
-      }
-    }
-  }
-  
+
   .eye {
     background-color: rgba(255, 255, 255, 0.15);
     border: none;
-    color: white;
-    opacity: 0.95;
-    cursor: pointer;
-    padding: 8px;
-    width: 36px;
-    height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
-    
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    font-size: clamp(26px, 6vw, 32px);
+    font-weight: 700;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    margin: 0;
+    letter-spacing: 0.6px;
+    transition: opacity 0.2s ease;
+
     &:hover {
-      opacity: 1;
-      background-color: rgba(255, 255, 255, 0.25);
-      transform: scale(1.05);
-    }
-    
-    i {
-      font-size: 20px;
+      opacity: 0.95;
+      cursor: pointer;
     }
   }
-}
 
-// Valor do saldo
-.balance {
-  font-size: clamp(22px, 5vw, 26px);
-  font-weight: 700;
-  position: relative;
-  z-index: 2;
-  text-shadow: 0px 1px 3px rgba(0,0,0,0.2);
-  margin: 0;
-  padding: 0 0 0 5px;
-  letter-spacing: 0.5px;
-  
-  // Ajuste para o formato R$ *** conforme screenshot
-  &::before {
-    content: "R$ ";
-    font-weight: 600;
+  .eye-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    opacity: 0.85;
   }
-}
+  // }
 
-// Número do cartão
-.card__number {
-  font-size: 18px;
-  font-weight: 500;
-  margin-top: 25px;
-  margin-bottom: 40px;
-  opacity: 0.95;
-  letter-spacing: 0.8px;
-  text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
-}
+  // Valor do saldo
+  .balance {
+    font-size: clamp(18px, 4vw, 22px);
+    font-weight: 500;
+    margin: 20px 0 32px;
+    opacity: 0.95;
+    letter-spacing: 1.2px;
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
 
-// Rodapé do cartão
-.footer {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: absolute;
-  bottom: 24px;
-  left: 24px;
-  right: 24px;
-  width: calc(100% - 48px);
+    &::before {
+      content: "R$ ";
+      font-weight: 600;
+    }
+  }
+
+  // Número do cartão
+  .card__number {
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 25px;
+    margin-bottom: 40px;
+    opacity: 0.95;
+    letter-spacing: 0.8px;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  // Rodapé do cartão
+  .footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    right: 24px;
+    width: calc(100% - 48px);
+  }
 }
 
 // Controles de navegação estilo UrbanPass
@@ -344,31 +380,31 @@
   margin-top: 20px;
   margin-bottom: 20px;
   gap: 15px;
-  
+
   .nav-btn {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     background: white;
     border: none;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     transition: all 0.2s ease;
-    
+
     &:hover {
       background: #f8f8f8;
       transform: scale(1.1);
     }
   }
-  
+
   .dots {
     display: flex;
     gap: 6px;
-    
+
     .dot {
       width: 8px;
       height: 8px;
@@ -376,13 +412,13 @@
       background: #cbd5e1;
       cursor: pointer;
       transition: all 0.2s ease;
-      
+
       &.active {
         background: #3b82f6;
         transform: scale(1.4);
         box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
       }
-      
+
       &:hover {
         transform: scale(1.2);
       }
@@ -391,13 +427,14 @@
 }
 
 // Formulário de solicitação de cartão
-.empty-state, .request-form {
+.empty-state,
+.request-form {
   max-width: 500px;
   margin: 0 auto;
   padding: 25px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
@@ -412,12 +449,12 @@
 
 .services {
   margin-top: 5px;
-  
+
   h2 {
     font-size: 18px;
     margin-bottom: 5px;
   }
-  
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -426,7 +463,7 @@
     max-width: 100%;
     overflow: hidden;
   }
-  
+
   .svc {
     padding: 8px;
     background: white;
@@ -439,18 +476,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
     transition: all 0.2s;
-    
+
     &:hover {
       background: #f8fafc;
       border-color: #cbd5e1;
     }
   }
-  
+
   h3 {
     margin-top: 0;
     margin-bottom: 15px;
   }
-  
+
   p {
     color: #64748b;
     margin-bottom: 25px;
@@ -459,38 +496,38 @@
 
 .request-form {
   text-align: left;
-  
+
   .field {
     margin-bottom: 15px;
-    
+
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: 500;
       font-size: 14px;
     }
-    
+
     .input {
       width: 100%;
       padding: 10px 15px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 16px;
-      
+
       &:focus {
         outline: none;
         border-color: #3b82f6;
-        box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
       }
     }
   }
-  
+
   .error-message {
     color: #ef4444;
     font-size: 14px;
     margin-top: 5px;
   }
-  
+
   .buttons {
     display: flex;
     gap: 10px;
@@ -506,20 +543,20 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   &.primary {
     background: #3b82f6;
     color: white;
-    
+
     &:hover {
       background: #2563eb;
     }
   }
-  
+
   &.secondary {
     background: #f1f5f9;
     color: #64748b;
-    
+
     &:hover {
       background: #e2e8f0;
     }

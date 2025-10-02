@@ -86,11 +86,19 @@ export class CardsComponent {
     }
   }
 
-  maskedBalance(card: Card) {
-    if (!this.showBalance()) return '***';
-    // Garantindo que temos um valor de saldo mesmo que seja zero
-    const v = (card.balance ?? 0).toFixed(2).replace('.', ',');
-    return v;
+  displayBalance(card: Card) {
+    const hasBalance = card.balance !== undefined && Number.isFinite(card.balance);
+
+    if (!this.showBalance()) {
+      return hasBalance ? '***' : 'indisponível';
+    }
+
+    if (!hasBalance) {
+      return 'indisponível';
+    }
+
+    const value = (card.balance ?? 0).toFixed(2);
+    return value.replace('.', ',');
   }
 
   // Toggle status do cartão (ativar/desativar)

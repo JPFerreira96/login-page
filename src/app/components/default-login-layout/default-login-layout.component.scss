@@ -16,9 +16,22 @@ main {
   }
 
   .main-section {
-    gap: 8px;
+    position: relative;
+    gap: 16px;
     flex-grow: 1;
-    background-color: $gray-bg;
+    width: 100%;
+    background: linear-gradient(rgba(0, 32, 96, 0.25), rgba(0, 32, 96, 0.25)),
+      url('/assets/svg/imagemFundoUrbanPass.png') center / cover no-repeat;
+    color: white;
+    text-align: center;
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      max-width: 420px;
+    }
   }
 
   .form-section {

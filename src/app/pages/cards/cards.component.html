@@ -14,44 +14,45 @@
 
       <!-- Se tem cartões, mostra o slider -->
       <div *ngIf="!loading() && !error() && cards().length > 0" class="slider">
-        <div class="slider__track"
-             [style.transform]="'translateX(' + (-index()*100) + '%)'">
-          <div class="slider__slide" *ngFor="let c of cards()">
+      <div class="slider__track"
+         [style.transform]="'translateX(' + (-index()*100) + '%)'">
+        <div class="slider__slide" *ngFor="let c of cards()">
             <div class="card" [ngClass]="colorClass(c)">
               <div class="card__header">
                 <div class="card__brand">
                   <img class="urbanPassLogo" src="assets/svg/urbanPassLogo.png" alt="UrbanPass">
+                  <span class="card__alias">{{ c.nome || (c.type | titlecase) }}</span>
                 </div>
-                <div class="card__type">{{ c.type | titlecase }}</div>
-                <button class="card__delete" (click)="confirmRemoveCard(c)" title="Remover cartão">
-                  <i class="fas fa-times"></i>
-                </button>
+                <div class="card__actions">
+                  <span class="card__status" [class.card__status--inactive]="c.status !== 'ATIVO'">
+                    {{ c.status === 'ATIVO' ? 'Ativo' : 'Bloqueado' }}
+                  </span>
+                  <button class="card__delete" (click)="confirmRemoveCard(c)" title="Remover cartão">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
               </div>
               
-              <!-- Número do cartão movido para cima do saldo conforme a referência -->
               <div class="card__number">
-                {{ c.serial }}
+                {{ c.serial || c.numeroCartao }}
               </div>
+              <!-- <div class="card__type-badge">
+                {{ c.type | titlecase }}
+              </div> -->
               
               <div class="row">
                 <div class="saldo-container">
-                  <small>Seu saldo</small>
-                  <div class="balance">{{ maskedBalance(c) }}</div>
+                  <small>Saldo disponível</small>
+                  <div class="balance">{{ displayBalance(c) }}</div>
                 </div>
                 <div class="eye-container">
                   <button class="eye" (click)="showBalance.set(!showBalance())"
                           [attr.aria-label]="showBalance() ? 'Ocultar saldo':'Mostrar saldo'">
                     <i [class]="showBalance() ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
                   </button>
-                  <!-- Status diretamente abaixo do ícone do olho com indicador de cor -->
-                  <div class="status-indicator">
-                    <span class="status-circle" [class.active]="c.status === 'ATIVO'"></span>
-                    <span class="status-text">{{ c.status === 'ATIVO' ? 'ativo' : 'inativo' }}</span>
-                  </div>
+                  <span class="eye-label">{{ showBalance() ? 'Ocultar' : 'Mostrar' }}</span>
                 </div>
               </div>
-              
-              <!-- Footer mantido para garantir posicionamento correto -->
             </div>
           </div>
         </div>
@@ -116,11 +117,6 @@
           </form>
         </div>
       </div>
-
-      <p class="note">
-        <strong>Obs:</strong> Sua carteira de estudante tem validade. Se não
-        for atualizada antes do vencimento, não será possível recarregar.
-      </p>
     </section>
 
     <section class="services">
