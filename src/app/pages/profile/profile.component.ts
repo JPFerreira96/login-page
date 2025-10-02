@@ -82,7 +82,7 @@ export class ProfileComponent implements OnInit {
       email: this.userForm.get('email')?.value
     };
 
-    this.userService.updateProfile(this.user.id, updateData).subscribe({
+    this.userService.updateProfile(updateData).subscribe({
       next: (updatedUser: User) => {
         this.user = updatedUser;
         this.success = 'Email atualizado com sucesso!';
@@ -109,7 +109,7 @@ export class ProfileComponent implements OnInit {
       newPassword: this.passwordForm.get('newPassword')?.value
     };
 
-    this.userService.changePassword(this.user.id, passwordData).subscribe({
+    this.userService.changePassword(passwordData).subscribe({
       next: () => {
         this.success = 'Senha alterada com sucesso!';
         this.passwordForm.reset();

@@ -30,7 +30,7 @@ export interface ChangePasswordRequest {
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = `${environment.apiBaseUrl}/api/users`;
+  private apiUrl = `${environment.apiBaseUrl}/users`;
 
   constructor(
     private http: HttpClient,
@@ -56,18 +56,18 @@ export class UserService {
   }
 
   /**
-   * Atualiza apenas o e-mail do usuário
+   * Atualiza os dados do usuário logado usando endpoint /me
    */
-  updateProfile(userId: string, userData: UpdateUserRequest): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${userId}`, userData, this.getHttpOptions())
+  updateProfile(userData: UpdateUserRequest): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/me`, userData, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
 
   /**
-   * Altera a senha do usuário
+   * Altera a senha do usuário logado usando endpoint /me/password
    */
-  changePassword(userId: string, passwordData: ChangePasswordRequest): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${userId}/password`, passwordData, this.getHttpOptions())
+  changePassword(passwordData: ChangePasswordRequest): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/me/password`, passwordData, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
 
