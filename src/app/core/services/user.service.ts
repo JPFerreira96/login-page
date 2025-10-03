@@ -137,4 +137,8 @@ export class UserService {
     
     return throwError(() => errorMessage);
   }
+
+  changeUserPassword(userId: string, passwordData: ChangePasswordRequest) {
+  return this.http.put<void>(`${this.apiUrl}/${userId}/password`, passwordData, this.getHttpOptions());
+}
 }

@@ -1,42 +1,155 @@
-<div class="users-wrapper">
-  <h2>Lista de Usuários</h2>
-  <div *ngIf="loading()">Carregando usuários…</div>
-  <div *ngIf="error()" class="error">{{ error() }}</div>
-  <div *ngFor="let user of users()" class="user-item">
-    <div class="user-row" (click)="toggleExpand(user.id)">
-      <span>{{ user.name }}</span>
-      <span>{{ user.email }}</span>
-      <button *ngIf="expanded() === user.id" (click)="startEdit(user); $event.stopPropagation()">Editar</button>
-      <button (click)="deleteUser(user); $event.stopPropagation()">Remover</button>
+<!-- src/app/pages/users/users.component.html -->
+<header class="topbar">
+  <h1 class="title">Lista de Usuários</h1>
+  <p class="subtitle">Selecione um usuário para gerenciar dados e cartões</p>
+</header>
+
+<div class="users-container">
+  <!-- COLUNA A: LISTA DE USUÁRIOS -->
+  <aside class="users-list">
+    <div class="toolbar">
+      <input type="text" placeholder="Buscar por nome ou email..." [(ngModel)]="searchTerm" (input)="applyFilter()">
     </div>
-    <div *ngIf="expanded() === user.id" class="user-details">
-      <!-- Edit form -->
-      <form *ngIf="editUserId() === user.id" [formGroup]="updateForm" (ngSubmit)="saveUser(user)">
-        <input formControlName="name" placeholder="Nome" />
-        <input formControlName="email" placeholder="Email" />
-        <button type="submit" [disabled]="updateForm.invalid">Salvar</button>
-        <button type="button" (click)="cancelEdit()">Cancelar</button>
-      </form>
-      <!-- Cards list -->
-      <div class="cards-list">
-        <h3>Cartões</h3>
-        <div *ngFor="let card of user.cards">
-          <span>{{ card.nome }} ({{ card.numeroCartao }})</span>
-          <button (click)="removeCard(user.id, card)">Remover</button>
-          <button (click)="toggleCardStatus(user.id, card)">{{ card.status ? 'Desativar' : 'Ativar' }}</button>
+
+    <div *ngIf="loading()">Carregando usuários…</div>
+    <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
+
+    <div class="user-row"
+         *ngFor="let u of filteredUsers()"
+         [class.active]="selectedId() === u.id"
+         (click)="select(u)">
+      <div class="id">{{ u.id }}</div>
+      <div class="name">{{ u.name }}</div>
+      <div class="email">{{ u.email }}</div>
+      <span class="badge" title="Quantidade de cartões">
+        {{ (u.cards?.length || 0) }}
+      </span>
+    </div>
+  </aside>
+
+  <!-- COLUNA B: DETALHES DO USUÁRIO SELECIONADO -->
+  <section class="details" *ngIf="selectedUser() as user">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-button" [class.active]="activeTab() === 'dados'" (click)="activeTab.set('dados')">Dados</button>
+      <button class="tab-button" [class.active]="activeTab() === 'senha'" (click)="activeTab.set('senha')">Alterar senha</button>
+    </div>
+
+    <div class="grid-two">
+      <!-- ESQUERDA: DADOS -->
+      <div class="card" *ngIf="activeTab() === 'dados'">
+        <div class="section-header"><h3>INFORMAÇÕES PESSOAIS</h3></div>
+
+        <div class="form-grid">
+          <div class="field-group">
+            <label class="field-label">Id do Usuário</label>
+            <div class="field-value">{{ user.id }}</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Nome</label>
+            <div class="field-value">{{ user.name }}</div>
+          </div>
+
+          <form [formGroup]="updateForm" (ngSubmit)="saveProfile(user.id)" class="editable-form">
+            <div class="field-group editable">
+              <label class="field-label" for="email">Email</label>
+              <div class="input-container">
+                <input id="email" type="email" class="field-input"
+                       formControlName="email"
+                       [class.error]="updateForm.controls.email.invalid && updateForm.controls.email.touched">
+                <button type="button" class="edit-icon" title="Editar email">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </div>
+              <div class="field-error" *ngIf="updateForm.controls.email.invalid && updateForm.controls.email.touched">
+                <span *ngIf="updateForm.controls.email.errors?.['required']">Email é obrigatório</span>
+                <span *ngIf="updateForm.controls.email.errors?.['email']">Formato inválido</span>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" [disabled]="updateForm.invalid || saving()">
+                {{ saving() ? 'Salvando...' : 'Salvar alterações' }}
+              </button>
+            </div>
+          </form>
         </div>
-        <form [formGroup]="addCardForm" (ngSubmit)="addCard(user)">
+      </div>
+
+      <div class="card" *ngIf="activeTab() === 'senha'">
+        <div class="section-header"><h3>ALTERAR SENHA</h3></div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword(user.id)" class="password-form">
+          <div class="field-group">
+            <label class="field-label" for="currentPassword">Senha atual</label>
+            <input id="currentPassword" type="password" class="field-input"
+                   formControlName="currentPassword"
+                   [class.error]="passwordForm.controls.currentPassword.invalid && passwordForm.controls.currentPassword.touched">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="newPassword">Nova senha</label>
+            <input id="newPassword" type="password" class="field-input"
+                   formControlName="newPassword"
+                   [class.error]="passwordForm.controls.newPassword.invalid && passwordForm.controls.newPassword.touched">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="passwordForm.invalid || saving()">
+              {{ saving() ? 'Alterando...' : 'Alterar senha' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- DIREITA: CARTÕES -->
+      <div class="card cards-card">
+        <div class="section-header">
+          <h3>Cartões <span class="chip">{{ (user.cards?.length || 0) }}</span></h3>
+        </div>
+
+        <!-- Lista -->
+        <div class="cards-list" *ngIf="user.cards?.length; else emptyCards">
+          <div class="card-item" *ngFor="let c of user.cards">
+            <div class="meta">
+              <div class="title">{{ c.nome || 'Sem nome' }}</div>
+              <div class="muted">{{ c.numeroCartao }}</div>
+              <div class="muted">Tipo: {{ c.tipoCartao }}</div>
+              <div class="status" [class.active]="c.status" [class.blocked]="!c.status">
+                {{ c.status ? 'ATIVO' : 'BLOQUEADO' }}
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-secondary" (click)="toggleCard(user.id, c); $event.stopPropagation()">
+                {{ c.status ? 'Desativar' : 'Ativar' }}
+              </button>
+              <button class="btn btn-danger" (click)="removeCard(user.id, c); $event.stopPropagation()">Remover</button>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #emptyCards>
+          <div class="empty">Nenhum cartão cadastrado.</div>
+        </ng-template>
+
+        <!-- Form Adicionar -->
+        <form class="add-card-form" [formGroup]="addCardForm" (ngSubmit)="addCard(user.id)">
           <h4>Adicionar Cartão</h4>
-          <input formControlName="numeroCartao" placeholder="XXXX.XXXX.XXXX.XXXX" />
-          <input formControlName="nome" placeholder="Nome Cartão" />
+          <input formControlName="numeroCartao" placeholder="XXXX.XXXX.XXXX.XXXX">
+          <input formControlName="nome" placeholder="Nome do Cartão">
           <select formControlName="tipoCartao">
             <option value="COMUM">Comum</option>
             <option value="ESTUDANTE">Estudante</option>
             <option value="TRABALHADOR">Trabalhador</option>
           </select>
-          <button type="submit" [disabled]="addCardForm.invalid">Adicionar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="addCardForm.invalid || saving()">
+            {{ saving() ? 'Adicionando...' : 'Adicionar' }}
+          </button>
         </form>
       </div>
     </div>
-  </div>
+
+    <!-- Alerts -->
+    <div *ngIf="success()" class="alert alert-success">{{ success() }}</div>
+    <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
+  </section>
 </div>

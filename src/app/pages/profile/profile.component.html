@@ -30,12 +30,12 @@
       (click)="switchTab('dados')">
       Dados
     </button>
-    <button 
+    <!-- <button 
       class="tab-button" 
       [class.active]="activeTab === 'endereco'" 
       (click)="switchTab('endereco')">
       Endereço
-    </button>
+    </button> -->
     <button 
       class="tab-button" 
       [class.active]="activeTab === 'alterarSenha'" 
@@ -53,24 +53,29 @@
     <div class="form-grid">
       <!-- Campos não editáveis (apenas visualização) -->
       <div class="field-group">
+        <label class="field-label">Id do Usuário</label>
+        <div class="field-value">{{ user.id || 'Não informado' }}</div>
+      </div>
+
+      <div class="field-group">
         <label class="field-label">Nome</label>
         <div class="field-value">{{ user.name || 'Não informado' }}</div>
       </div>
 
-      <div class="field-group">
+      <!-- <div class="field-group">
         <label class="field-label">CPF</label>
         <div class="field-value">{{ user.cpf || 'Não informado' }}</div>
-      </div>
+      </div> -->
 
-      <div class="field-group">
+      <!-- <div class="field-group">
         <label class="field-label">Data de nascimento</label>
         <div class="field-value">{{ user.birthDate || 'Não informado' }}</div>
-      </div>
+      </div> -->
 
-      <div class="field-group">
+      <!-- <div class="field-group">
         <label class="field-label">Nome da mãe</label>
         <div class="field-value">{{ user.motherName || 'Não informado' }}</div>
-      </div>
+      </div> -->
 
       <!-- Campo editável: Email -->
       <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="editable-form">
@@ -96,21 +101,10 @@
           </div>
         </div>
 
-        <div class="field-group editable">
+        <!-- <div class="field-group editable">
           <label class="field-label">Telefone</label>
           <div class="field-value">{{ user.phone || 'Não informado' }}</div>
-        </div>
-
-        <div class="field-group editable">
-          <label class="field-label">Tema</label>
-          <div class="theme-selector">
-            <select class="field-select">
-              <option value="padrao">PADRÃO</option>
-              <option value="escuro">ESCURO</option>
-              <option value="claro">CLARO</option>
-            </select>
-          </div>
-        </div>
+        </div> -->
 
         <div class="form-actions">
           <button 
@@ -126,7 +120,6 @@
       <!-- Excluir conta -->
       <div class="danger-zone">
         <div class="field-group">
-          <label class="field-label">Excluir</label>
           <button 
             type="button" 
             class="btn btn-danger"
