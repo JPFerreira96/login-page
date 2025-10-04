@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../enviroments/enviroment';
 import { AuthService } from './auth.service';
+import { Card } from './card.service';
 
 export interface User {
   id: string;
@@ -36,7 +37,7 @@ export class UserService {
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) {}
+  ) { }
 
   private getHttpOptions() {
     const token = this.authService.getToken();
@@ -95,10 +96,10 @@ export class UserService {
       .pipe(catchError(this.handleError.bind(this)));
   }
   /** Adiciona cartão a um usuário */
-  addCardToUser(userId: string, request: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/${userId}/cards`, request, this.getHttpOptions())
-      .pipe(catchError(this.handleError.bind(this)));
-  }
+  // addCardToUser(userId: string, request: any): Observable<any> {
+  //   return this.http.post<any>(`${this.apiUrl}/${userId}/cards`, request, this.getHttpOptions())
+  //     .pipe(catchError(this.handleError.bind(this)));
+  // }
   /** Remove cartão de um usuário */
   removeCardFromUser(userId: string, cardId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${userId}/cards/${cardId}`, this.getHttpOptions())
@@ -117,9 +118,9 @@ export class UserService {
 
   private handleError(error: any): Observable<never> {
     console.error('Erro na API:', error);
-    
+
     let errorMessage = 'Erro desconhecido';
-    
+
     if (error.error?.message) {
       errorMessage = error.error.message;
     } else if (error.status === 401) {
@@ -134,11 +135,15 @@ export class UserService {
     } else if (error.status === 0) {
       errorMessage = 'Erro de conexão com o servidor.';
     }
-    
+
     return throwError(() => errorMessage);
   }
 
   changeUserPassword(userId: string, passwordData: ChangePasswordRequest) {
-  return this.http.put<void>(`${this.apiUrl}/${userId}/password`, passwordData, this.getHttpOptions());
-}
+    return this.http.put<void>(`${this.apiUrl}/${userId}/password`, passwordData, this.getHttpOptions());
+  }
+
+  addCardToUser(userId: string, payload: { numeroCartao: string; nome: string; tipoCartao: 'COMUM' | 'ESTUDANTE' | 'TRABALHADOR'; }) {
+    return this.http.post<Card>(`${this.apiUrl}/${userId}/cards`, payload);
+  }
 }
