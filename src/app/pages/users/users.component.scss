@@ -160,6 +160,7 @@
 .btn-primary { background: #3b82f6; color: #fff; }
 .btn-secondary { background: #e5e7eb; }
 .btn-danger { background: #ef4444; color: #fff; }
+.btn-block { width: 100%; display: inline-flex; justify-content: center; align-items: center; }
 
 .alert { margin-top: 12px; padding: 10px 12px; border-radius: 8px; }
 .alert-success { background: #ecfdf5; color: #065f46; }
@@ -176,6 +177,30 @@
 
 .add-card-form { display: grid; gap: 8px; }
 .add-card-form input, .add-card-form select { padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; }
+
+.danger-zone {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  display: grid;
+  gap: 10px;
+
+  h4 {
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #b91c1c;
+  }
+
+  p {
+    margin: 0;
+    font-size: 12px;
+    color: #7f1d1d;
+  }
+}
 
 @media (max-width: 1200px) {
   .users-container { grid-template-columns: 1fr; }

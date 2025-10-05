@@ -171,6 +171,37 @@ export class UsersComponent implements OnInit {
       });
   }
 
+  deleteUserAccount(user: User): void {
+    if (!user) return;
+
+    const friendlyName = user.name || user.email || 'este usuário';
+    const confirmMessage = `Tem certeza que deseja excluir a conta de ${friendlyName}?\n\nEssa ação é permanente e removerá todos os dados associados.`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    this.saving.set(true);
+    this.clearFeedback();
+
+    this.userService.deleteUser(user.id)
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe({
+        next: () => {
+          this.showSuccess(`Conta de ${friendlyName} excluída com sucesso.`);
+
+          const updatedUsers = this.users().filter(u => u.id !== user.id);
+          this.users.set(updatedUsers);
+          this.filteredUsers.set(this.filterArray(updatedUsers, this.searchTerm));
+
+          if (this.selectedId() === user.id) {
+            this.selectedId.set(null);
+          }
+        },
+        error: (e) => this.showError(String(e))
+      });
+  }
+
   removeCard(userId: string, card: CardBackend): void {
     this.saving.set(true);
     this.clearFeedback();

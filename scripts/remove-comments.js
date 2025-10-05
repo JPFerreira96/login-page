@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const allowedExtensions = new Set(['.ts', '.html', '.scss', '.css', '.js', '.json']);
-const skipDirs = new Set(['node_modules', 'dist', '.git']);
+const skipDirs = new Set(['node_modules', 'dist', '.git', '.angular', '.vscode']);
 
 function stripLineComments(content) {
   return content

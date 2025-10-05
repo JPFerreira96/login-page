@@ -76,6 +76,17 @@
               </button>
             </div>
           </form>
+
+          <div class="danger-zone">
+            <h4>Zona de risco</h4>
+            <p>Excluir a conta remove definitivamente todos os dados deste usuário.</p>
+            <button type="button"
+                    class="btn btn-danger btn-block"
+                    (click)="deleteUserAccount(user)"
+                    [disabled]="saving()">
+              {{ saving() ? 'Excluindo...' : 'Excluir conta' }}
+            </button>
+          </div>
         </div>
       </div>
 
