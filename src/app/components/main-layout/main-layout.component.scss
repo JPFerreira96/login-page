@@ -3,7 +3,7 @@
   --card: #ffffff;
   --text: #1f2430;
   --muted: #8a8fa3;
-  --primary: #6d28d9;  // roxo
+  --primary: #6d28d9;
   --primary-600: #5b21b6;
   --orange: #e85d2b;
   --teal: #0ea5a3;
@@ -11,8 +11,8 @@
 
 .layout {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr); /* Use minmax para evitar que o conteúdo ultrapasse o contêiner */
-  width: 100vw; /* Largura total da viewport */
+  grid-template-columns: 260px minmax(0, 1fr);
+  width: 100vw;
   height: 100vh;
   max-height: 100vh;
   overflow: hidden;
@@ -54,10 +54,10 @@
 
 .content { 
   padding: 20px 24px;
-  overflow-y: auto; /* Permitir rolagem vertical apenas */
-  overflow-x: hidden; /* Prevenir rolagem horizontal */
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 100vh;
   max-height: 100vh;
   box-sizing: border-box;
-  width: 100%; /* Garantir que a largura seja limitada ao contêiner pai */
+  width: 100%;
 }

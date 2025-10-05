@@ -3,26 +3,26 @@
   <p class="subtitle">Visualize aqui seus dados pessoais</p>
 </header>
 
-<!-- Loading State -->
+
 <div *ngIf="loading" class="loading-state">
   <div class="spinner"></div>
   <p>Carregando dados...</p>
 </div>
 
-<!-- Error Alert -->
+
 <div *ngIf="error" class="alert alert-error">
   <i class="fas fa-exclamation-triangle"></i>
   {{ error }}
 </div>
 
-<!-- Success Alert -->
+
 <div *ngIf="success" class="alert alert-success">
   <i class="fas fa-check-circle"></i>
   {{ success }}
 </div>
 
 <section class="profile-content" *ngIf="!loading">
-  <!-- Navigation Tabs -->
+  
   <div class="tabs">
     <button 
       class="tab-button" 
@@ -30,12 +30,7 @@
       (click)="switchTab('dados')">
       Dados
     </button>
-    <!-- <button 
-      class="tab-button" 
-      [class.active]="activeTab === 'endereco'" 
-      (click)="switchTab('endereco')">
-      Endereço
-    </button> -->
+    
     <button 
       class="tab-button" 
       [class.active]="activeTab === 'alterarSenha'" 
@@ -44,96 +39,84 @@
     </button>
   </div>
 
-  <!-- Dados Tab -->
   <div class="card" *ngIf="activeTab === 'dados' && user">
     <div class="section-header">
       <h3>INFORMAÇÕES PESSOAIS</h3>
     </div>
 
-    <div class="form-grid">
-      <!-- Campos não editáveis (apenas visualização) -->
+    <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="form-grid">
+      
       <div class="field-group">
         <label class="field-label">Id do Usuário</label>
         <div class="field-value">{{ user.id || 'Não informado' }}</div>
       </div>
 
-      <div class="field-group">
-        <label class="field-label">Nome</label>
-        <div class="field-value">{{ user.name || 'Não informado' }}</div>
+      <div class="field-group editable">
+        <label class="field-label" for="name">Nome</label>
+        <div class="input-container">
+          <input 
+            type="text" 
+            id="name"
+            class="field-input" 
+            formControlName="name"
+            [class.error]="nameControl?.invalid && nameControl?.touched"
+            placeholder="Digite seu nome completo">
+        </div>
+        <div class="field-error" *ngIf="nameControl?.invalid && nameControl?.touched">
+          <span *ngIf="nameControl?.errors?.['required']">Nome é obrigatório</span>
+          <span *ngIf="nameControl?.errors?.['minlength']">Nome deve ter pelo menos 2 caracteres</span>
+        </div>
       </div>
 
-      <!-- <div class="field-group">
-        <label class="field-label">CPF</label>
-        <div class="field-value">{{ user.cpf || 'Não informado' }}</div>
-      </div> -->
-
-      <!-- <div class="field-group">
-        <label class="field-label">Data de nascimento</label>
-        <div class="field-value">{{ user.birthDate || 'Não informado' }}</div>
-      </div> -->
-
-      <!-- <div class="field-group">
-        <label class="field-label">Nome da mãe</label>
-        <div class="field-value">{{ user.motherName || 'Não informado' }}</div>
-      </div> -->
-
-      <!-- Campo editável: Email -->
-      <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="editable-form">
-        <div class="field-group editable">
-          <label class="field-label" for="email">Email</label>
-          <div class="input-container">
-            <input 
-              type="email" 
-              id="email"
-              class="field-input"
-              formControlName="email"
-              [class.error]="emailControl?.invalid && emailControl?.touched">
-            <button 
-              type="button" 
-              class="edit-icon"
-              title="Editar email">
-              <i class="fas fa-edit"></i>
-            </button>
-          </div>
-          <div class="field-error" *ngIf="emailControl?.invalid && emailControl?.touched">
-            <span *ngIf="emailControl?.errors?.['required']">Email é obrigatório</span>
-            <span *ngIf="emailControl?.errors?.['email']">Email deve ter um formato válido</span>
-          </div>
-        </div>
-
-        <!-- <div class="field-group editable">
-          <label class="field-label">Telefone</label>
-          <div class="field-value">{{ user.phone || 'Não informado' }}</div>
-        </div> -->
-
-        <div class="form-actions">
-          <button 
-            type="submit" 
-            class="btn btn-primary"
-            [disabled]="userForm.invalid || loading">
-            <i class="fas fa-save"></i>
-            {{ loading ? 'Salvando...' : 'Salvar alterações' }}
-          </button>
-        </div>
-      </form>
-
-      <!-- Excluir conta -->
-      <div class="danger-zone">
-        <div class="field-group">
+      <div class="field-group editable">
+        <label class="field-label" for="email">Email</label>
+        <div class="input-container">
+          <input 
+            type="email" 
+            id="email"
+            class="field-input"
+            formControlName="email"
+            [class.error]="emailControl?.invalid && emailControl?.touched">
           <button 
             type="button" 
-            class="btn btn-danger"
-            (click)="deleteAccount()"
-            [disabled]="loading">
-            <i class="fas fa-trash"></i>
-            Excluir conta
+            class="edit-icon"
+            title="Editar email">
+            <i class="fas fa-edit"></i>
           </button>
         </div>
+        <div class="field-error" *ngIf="emailControl?.invalid && emailControl?.touched">
+          <span *ngIf="emailControl?.errors?.['required']">Email é obrigatório</span>
+          <span *ngIf="emailControl?.errors?.['email']">Email deve ter um formato válido</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="userForm.invalid || loading">
+          <i class="fas fa-save"></i>
+          {{ loading ? 'Salvando...' : 'Salvar alterações' }}
+        </button>
+      </div>
+    </form>
+
+    
+    <div class="danger-zone">
+      <div class="field-group">
+        <button 
+          type="button" 
+          class="btn btn-danger"
+          (click)="deleteAccount()"
+          [disabled]="loading">
+          <i class="fas fa-trash"></i>
+          Excluir conta
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Alterar Senha Tab -->
+  
   <div class="card" *ngIf="activeTab === 'alterarSenha'">
     <div class="section-header">
       <h3>ALTERAR SENHA</h3>

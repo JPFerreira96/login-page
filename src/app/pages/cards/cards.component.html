@@ -1,129 +1,207 @@
 <header class="topbar">
-      <h1 class="title">Meus cartões</h1>
-    </header>
+  <h1 class="title">Meus cartões</h1>
+</header>
 
-    <section class="cards-area">
-      <div class="info-row">
-        <span class="dot dot--blue"></span>
-        <span class="dot dot--gray"></span>
-      </div>
+<section class="cards-area">
+  
+  <div *ngIf="loading()" class="skeleton">Carregando…</div>
+  <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
 
-      <!-- loading / erro -->
-      <div *ngIf="loading()" class="skeleton">Carregando…</div>
-      <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
-
-      <!-- Se tem cartões, mostra o slider -->
-      <div *ngIf="!loading() && !error() && cards().length > 0" class="slider">
-      <div class="slider__track"
-         [style.transform]="'translateX(' + (-index()*100) + '%)'">
-        <div class="slider__slide" *ngFor="let c of cards()">
-            <div class="card" [ngClass]="colorClass(c)">
-              <div class="card__header">
-                <div class="card__brand">
-                  <img class="urbanPassLogo" src="assets/svg/urbanPassLogo.png" alt="UrbanPass">
-                  <span class="card__alias">{{ c.nome || (c.type | titlecase) }}</span>
-                </div>
-                <div class="card__actions">
-                  <span class="card__status" [class.card__status--inactive]="c.status !== 'ATIVO'">
-                    {{ c.status === 'ATIVO' ? 'Ativo' : 'Bloqueado' }}
-                  </span>
-                  <button class="card__delete" (click)="confirmRemoveCard(c)" title="Remover cartão">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </div>
-              
-              <div class="card__number">
-                {{ c.serial || c.numeroCartao }}
-              </div>
-              <!-- <div class="card__type-badge">
-                {{ c.type | titlecase }}
-              </div> -->
-              
-              <div class="row">
-                <div class="saldo-container">
-                  <small>Saldo disponível</small>
-                  <div class="balance">{{ displayBalance(c) }}</div>
-                </div>
-                <div class="eye-container">
-                  <button class="eye" (click)="showBalance.set(!showBalance())"
-                          [attr.aria-label]="showBalance() ? 'Ocultar saldo':'Mostrar saldo'">
-                    <i [class]="showBalance() ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
-                  </button>
-                  <span class="eye-label">{{ showBalance() ? 'Ocultar' : 'Mostrar' }}</span>
-                </div>
-              </div>
+  
+  <div *ngIf="!loading() && !error() && cards().length > 0" class="slider">
+    <div
+      class="slider__track"
+      [style.transform]="'translateX(' + -index() * 100 + '%)'"
+    >
+      <div class="slider__slide" *ngFor="let c of cards()">
+        <div class="card" [ngClass]="colorClass(c)">
+          <div class="card__header">
+            <div class="card__brand">
+              <img
+                class="urbanPassLogo"
+                src="assets/svg/urbanPassLogo.png"
+                alt="UrbanPass"
+              />
+              <span class="card__alias" (click)="renameCard(c)">{{
+                c.nome || (c.type | titlecase)
+              }}</span>
             </div>
-          </div>
-        </div>
-
-        <!-- controles de navegação estilo UrbanPass -->
-        <div class="slider-controls">
-          <button class="nav-btn" (click)="prev()">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <div class="dots">
-            <span class="dot"
-                  *ngFor="let _ of cards(); let i = index"
-                  [class.active]="i===index()"
-                  (click)="index.set(i)"></span>
-          </div>
-          <button class="nav-btn" (click)="next()">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Se não tem cartões, mostra opção de solicitar -->
-      <div *ngIf="!loading() && !error() && cards().length === 0" class="empty-state">
-        <div *ngIf="!showRequestForm()" class="no-cards">
-          <h3>Você ainda não possui cartões</h3>
-          <p>Solicite seu primeiro cartão de transporte para começar a utilizar o sistema UrbanPass.</p>
-          <button class="btn primary" (click)="showCardRequestForm()">
-            Solicitar Cartão
-          </button>
-        </div>
-
-        <!-- Formulário de solicitação -->
-        <div *ngIf="showRequestForm()" class="request-form">
-          <h3>Solicitar Novo Cartão</h3>
-          <form [formGroup]="requestForm" (ngSubmit)="requestCard()">
-            <div class="field">
-              <label for="cardType">Tipo de Cartão:</label>
-              <select id="cardType" formControlName="cardType" class="input">
-                <option value="">Selecione o tipo</option>
-                <option value="COMUM">Comum</option>
-                <option value="ESTUDANTE">Estudantil</option>
-                <option value="TRABALHADOR">Trabalhador</option>
-              </select>
-            </div>
-            
-            <div class="field">
-              <label for="name">Nome do Cartão:</label>
-              <input id="name" type="text" formControlName="name" class="input"
-                     placeholder="Ex: Meu cartão estudante">
-            </div>
-
-            <div class="form-actions">
-              <button type="button" class="btn ghost" (click)="hideCardRequestForm()"
-                      [disabled]="requestingCard()">
-                Cancelar
-              </button>
-              <button type="submit" class="btn primary" 
-                      [disabled]="!requestForm.valid || requestingCard()">
-                {{ requestingCard() ? 'Solicitando...' : 'Solicitar Cartão' }}
+            <div class="card__actions">
+              <span
+                class="card__status"
+                [class.card__status--inactive]="c.status !== 'ATIVO'"
+              >
+                {{ c.status === "ATIVO" ? "Ativo" : "Bloqueado" }}
+              </span>
+              <button
+                class="card__delete"
+                (click)="confirmRemoveCard(c)"
+                title="Remover cartão"
+              >
+                <i class="fas fa-times"></i>
               </button>
             </div>
-          </form>
+          </div>
+
+          <div class="card__number">
+            {{ c.serial || c.numeroCartao }}
+          </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="services">
-      <h2>Serviços do cartão</h2>
-      <div class="grid">
-        <button class="svc">Compra de Crédito</button>
-        <button class="svc">Bloquear</button>
-        <button class="svc">Criar Novo Cartão </button>
+    
+    <div class="slider-controls">
+      <button class="nav-btn" (click)="prev()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="dots">
+        <span
+          class="dot"
+          *ngFor="let _ of cards(); let i = index"
+          [class.active]="i === index()"
+          (click)="index.set(i)"
+        ></span>
       </div>
-    </section>
+      <button class="nav-btn" (click)="next()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  
+  <div
+    *ngIf="!loading() && !error() && cards().length === 0"
+    class="empty-state"
+  >
+    <div *ngIf="!showRequestForm()" class="no-cards">
+      <h3>Você ainda não possui cartões</h3>
+      <p>
+        Solicite seu primeiro cartão de transporte para começar a utilizar o
+        sistema UrbanPass.
+      </p>
+      <button class="btn primary" (click)="showCardRequestForm()">
+        Solicitar Cartão
+      </button>
+    </div>
+
+    
+    <div *ngIf="showRequestForm()" class="request-form">
+      <h3>Solicitar Novo Cartão</h3>
+      <form [formGroup]="requestForm" (ngSubmit)="requestCard()">
+        <div class="field">
+          <label for="cardType">Tipo de Cartão:</label>
+          <select id="cardType" formControlName="cardType" class="input">
+            <option value="">Selecione o tipo</option>
+            <option value="COMUM">Comum</option>
+            <option value="ESTUDANTE">Estudantil</option>
+            <option value="TRABALHADOR">Trabalhador</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="name">Nome do Cartão:</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            class="input"
+            placeholder="Ex: Meu cartão estudante"
+          />
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn ghost"
+            (click)="hideCardRequestForm()"
+            [disabled]="requestingCard()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn primary"
+            [disabled]="!requestForm.valid || requestingCard()"
+          >
+            {{ requestingCard() ? "Solicitando..." : "Solicitar Cartão" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="services">
+  <h2>Serviços do cartão</h2>
+  <div class="grid">
+    <button class="svc" (click)="bloqueiaAtual()">
+      {{ isCurrentCardActive() ? "Bloquear" : "Desbloquear" }}
+    </button>
+    <button
+      class="svc"
+      (click)="criarNovoCartao()"
+      *ngIf="hasCards() && !showRequestModal()"
+    >
+      Criar Novo Cartão
+    </button>
+  </div>
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showRequestModal()"
+    (click)="closeRequestModal()"
+  ></div>
+
+  <div class="modal" *ngIf="showRequestModal()">
+    <div class="modal__body">
+      <header class="modal__header">
+        <h3>Solicitar Novo Cartão</h3>
+        <button class="modal__close" (click)="closeRequestModal()">
+          &times;
+        </button>
+      </header>
+
+      <form [formGroup]="requestForm" (ngSubmit)="requestCard()">
+        <div class="field">
+          <label for="cardType">Tipo de Cartão</label>
+          <select id="cardType" formControlName="cardType" class="input">
+            <option value="">Selecione</option>
+            <option value="COMUM">Comum</option>
+            <option value="ESTUDANTE">Estudante</option>
+            <option value="TRABALHADOR">Trabalhador</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="name">Nome do Cartão</label>
+          <input
+            id="name"
+            type="text"
+            class="input"
+            formControlName="name"
+            placeholder="Ex.: Cartão Estudante"
+          />
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn ghost"
+            (click)="closeRequestModal()"
+            [disabled]="requestingCard()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn primary"
+            [disabled]="!requestForm.valid || requestingCard()"
+          >
+            {{ requestingCard() ? "Solicitando..." : "Solicitar" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

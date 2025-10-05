@@ -3,30 +3,12 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../enviroments/enviroment';
+import { Card } from '../../interface/card.interface';
+import { ChangePasswordRequest } from '../../interface/change-password-request.interface';
+import { UpdateUserRequest } from '../../interface/update-user-request.interface';
+import { User } from '../../interface/user.interface';
+import { CardType } from '../../types/card.type';
 import { AuthService } from './auth.service';
-import { Card } from './card.service';
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  cpf?: string;
-  birthDate?: string;
-  motherName?: string;
-  role: string;
-  cards?: any[];
-}
-
-export interface UpdateUserRequest {
-  name: string;
-  email: string;
-}
-
-export interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -49,68 +31,56 @@ export class UserService {
     };
   }
 
-  /**
-   * Busca os dados do usuário logado através do endpoint /me
-   */
+
   getProfile(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/me`, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
 
-  /**
-   * Atualiza os dados do usuário logado usando endpoint /me
-   */
+
   updateProfile(userData: UpdateUserRequest): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/me`, userData, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
 
-  /**
-   * Altera a senha do usuário logado usando endpoint /me/password
-   */
+
   changePassword(passwordData: ChangePasswordRequest): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/me/password`, passwordData, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
 
-  /**
-   * Exclui a conta do usuário
-   */
+
   deleteUser(userId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${userId}`, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
-  /** Lista todos os usuários (ADMIN) */
+
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}`, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
-  /** Busca usuário por ID */
+
   getUser(userId: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${userId}`, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
-  /** Atualiza usuário (ADMIN ou próprio usuário) */
+
   updateUser(userId: string, userData: UpdateUserRequest): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/${userId}`, userData, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
-  /** Adiciona cartão a um usuário */
-  // addCardToUser(userId: string, request: any): Observable<any> {
-  //   return this.http.post<any>(`${this.apiUrl}/${userId}/cards`, request, this.getHttpOptions())
-  //     .pipe(catchError(this.handleError.bind(this)));
-  // }
-  /** Remove cartão de um usuário */
+
+
   removeCardFromUser(userId: string, cardId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${userId}/cards/${cardId}`, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
-  /** Ativa cartão de um usuário */
+
   activateUserCard(userId: string, cardId: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${userId}/cards/${cardId}/activate`, null, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
   }
-  /** Desativa cartão de um usuário */
+
   deactivateUserCard(userId: string, cardId: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${userId}/cards/${cardId}/deactivate`, null, this.getHttpOptions())
       .pipe(catchError(this.handleError.bind(this)));
@@ -140,10 +110,13 @@ export class UserService {
   }
 
   changeUserPassword(userId: string, passwordData: ChangePasswordRequest) {
-    return this.http.put<void>(`${this.apiUrl}/${userId}/password`, passwordData, this.getHttpOptions());
+    return this.http.put<void>(`${this.apiUrl}/${userId}/password`, passwordData, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
   }
 
-  addCardToUser(userId: string, payload: { numeroCartao: string; nome: string; tipoCartao: 'COMUM' | 'ESTUDANTE' | 'TRABALHADOR'; }) {
-    return this.http.post<Card>(`${this.apiUrl}/${userId}/cards`, payload);
+
+  addCardToUser(userId: string, payload: { nome: string; tipoCartao: CardType }) {
+    return this.http.post<Card>(`${this.apiUrl}/${userId}/cards`, payload, this.getHttpOptions())
+      .pipe(catchError(this.handleError.bind(this)));
   }
 }

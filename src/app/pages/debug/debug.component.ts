@@ -105,7 +105,7 @@ export class DebugComponent {
       next: (cards) => {
         console.log('✅ Cartões criados:', cards);
         this.apiResponse.set(`✅ CARTÕES CRIADOS COM SUCESSO:\n${JSON.stringify(cards, null, 2)}`);
-        // Atualizar status de autenticação
+        
         this.updateAuthStatus();
       },
       error: (error) => {

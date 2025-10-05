@@ -1,11 +1,11 @@
-<!-- src/app/pages/users/users.component.html -->
+
 <header class="topbar">
   <h1 class="title">Lista de Usuários</h1>
   <p class="subtitle">Selecione um usuário para gerenciar dados e cartões</p>
 </header>
 
 <div class="users-container">
-  <!-- COLUNA A: LISTA DE USUÁRIOS -->
+  
   <aside class="users-list">
     <div class="toolbar">
       <input type="text" placeholder="Buscar por nome ou email..." [(ngModel)]="searchTerm" (input)="applyFilter()">
@@ -18,25 +18,27 @@
          *ngFor="let u of filteredUsers()"
          [class.active]="selectedId() === u.id"
          (click)="select(u)">
-      <div class="id">{{ u.id }}</div>
-      <div class="name">{{ u.name }}</div>
-      <div class="email">{{ u.email }}</div>
-      <span class="badge" title="Quantidade de cartões">
+      <div class="user-info">
+        <div class="name" [title]="u.name || 'Sem nome'">{{ u.name || 'Sem nome' }}</div>
+        <div class="email" [title]="u.email">{{ u.email }}</div>
+        <div class="id" [title]="u.id">{{ u.id }}</div>
+      </div>
+      <span class="badge" [title]="(u.cards?.length || 0) + ' cartão(ões)'">
         {{ (u.cards?.length || 0) }}
       </span>
     </div>
   </aside>
 
-  <!-- COLUNA B: DETALHES DO USUÁRIO SELECIONADO -->
+  
   <section class="details" *ngIf="selectedUser() as user">
-    <!-- Tabs -->
+    
     <div class="tabs">
       <button class="tab-button" [class.active]="activeTab() === 'dados'" (click)="activeTab.set('dados')">Dados</button>
       <button class="tab-button" [class.active]="activeTab() === 'senha'" (click)="activeTab.set('senha')">Alterar senha</button>
     </div>
 
     <div class="grid-two">
-      <!-- ESQUERDA: DADOS -->
+      
       <div class="card" *ngIf="activeTab() === 'dados'">
         <div class="section-header"><h3>INFORMAÇÕES PESSOAIS</h3></div>
 
@@ -101,13 +103,13 @@
         </form>
       </div>
 
-      <!-- DIREITA: CARTÕES -->
+      
       <div class="card cards-card">
         <div class="section-header">
           <h3>Cartões <span class="chip">{{ (user.cards?.length || 0) }}</span></h3>
         </div>
 
-        <!-- Lista -->
+        
         <div class="cards-list" *ngIf="user.cards?.length; else emptyCards">
           <div class="card-item" *ngFor="let c of user.cards">
             <div class="meta">
@@ -131,10 +133,9 @@
           <div class="empty">Nenhum cartão cadastrado.</div>
         </ng-template>
 
-        <!-- Form Adicionar -->
+        
         <form class="add-card-form" [formGroup]="addCardForm" (ngSubmit)="addCard(user.id)">
           <h4>Adicionar Cartão</h4>
-          <input formControlName="numeroCartao" placeholder="XXXX.XXXX.XXXX.XXXX">
           <input formControlName="nome" placeholder="Nome do Cartão">
           <select formControlName="tipoCartao">
             <option value="COMUM">Comum</option>
@@ -148,7 +149,7 @@
       </div>
     </div>
 
-    <!-- Alerts -->
+    
     <div *ngIf="success()" class="alert alert-success">{{ success() }}</div>
     <div *ngIf="error()" class="alert alert-error">{{ error() }}</div>
   </section>

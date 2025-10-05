@@ -1,5 +1,5 @@
-// ESTILOS DO COMPONENTE PROFILE - URBANPASS
-// Inspirado no layout VEM mas adaptado para o UrbanPass
+
+
 
 .topbar {
   display: flex;
@@ -22,7 +22,7 @@
   }
 }
 
-// Estados de loading e alertas
+
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -78,13 +78,13 @@
   }
 }
 
-// Container principal
+
 .profile-content {
   max-width: 1000px;
   margin: 0 auto;
 }
 
-// Navegação por abas
+
 .tabs {
   display: flex;
   gap: 0;
@@ -115,7 +115,7 @@
   }
 }
 
-// Card principal
+
 .card {
   background: #fff;
   border-radius: 0 0 16px 16px;
@@ -126,7 +126,7 @@
   min-height: 500px;
 }
 
-// Cabeçalho das seções
+
 .section-header {
   background: #3b82f6;
   color: white;
@@ -141,12 +141,12 @@
   }
 }
 
-// Grade de formulário
+
 .form-grid {
   padding: 32px;
 }
 
-// Grupos de campos
+
 .field-group {
   display: flex;
   align-items: center;
@@ -173,7 +173,7 @@
   }
 }
 
-// Campos editáveis
+
 .editable-form {
   width: 100%;
 }
@@ -224,7 +224,7 @@
   }
 }
 
-// Seletor de tema
+
 .theme-selector {
   flex: 1;
   
@@ -244,7 +244,7 @@
   }
 }
 
-// Erros de validação
+
 .field-error {
   flex: 1;
   color: #dc2626;
@@ -256,14 +256,14 @@
   }
 }
 
-// Ações do formulário
+
 .form-actions {
   margin-top: 32px;
   padding-top: 24px;
   border-top: 1px solid #f3f4f6;
 }
 
-// Formulário de senha
+
 .password-form {
   padding: 32px;
   
@@ -303,7 +303,7 @@
   }
 }
 
-// Botões
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -347,7 +347,7 @@
   }
 }
 
-// Zona de perigo
+
 .danger-zone {
   margin-top: 48px;
   padding-top: 24px;
@@ -362,7 +362,7 @@
   }
 }
 
-// Placeholder para abas não implementadas
+
 .placeholder-content {
   padding: 60px 32px;
   text-align: center;
@@ -374,7 +374,7 @@
   }
 }
 
-// Responsividade
+
 @media (max-width: 768px) {
   .topbar {
     .title {

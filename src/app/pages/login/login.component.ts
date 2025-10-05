@@ -17,20 +17,20 @@ import { LoginService } from '../../core/services/login.service';
   imports: [
     DefaultLoginLayoutComponent,
     ReactiveFormsModule,
-    // AuthService,
+
     PrimaryInputComponent
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'] // Corrigi aqui
+  styleUrls: ['./login.component.scss']
 })
 
 export class LoginComponent {
   loginForm!: FormGroup;
-  
+
   constructor(
     private router: Router,
     @Inject(LoginService) private loginService: LoginService,
-    private toastService: ToastrService, // Adicionei aqui
+    private toastService: ToastrService,
     private auth: AuthService
   ) {
     this.loginForm = new FormGroup({
@@ -39,91 +39,33 @@ export class LoginComponent {
     });
   }
 
-  // submit() {
-  //   this.loginService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe(
-  //     () => this.toastService.success('Login realizado com sucesso'),
-  //     (error) => this.toastService.error('Erro ao realizar login')
-  //   );
-  // }
+  onSubmit() {
+    const { email, password } = this.loginForm.value;
 
-  //   onSubmit() {
-  //   this.loginService.login(this.loginForm.value.email, this.loginForm.value.password)
-  //     .subscribe({
-  //       next: () => {
-  //         const role = this.loginForm.value.role;
-  //         this.router.navigate([role === 'ADMIN' ? '/admin' : '/dashboard']);
-  //       },
-  //       error: () => this.toastService.error('Usuário ou senha inválidos')
-  //     });
-  // }
+    const remember = !!this.loginForm.value.rememberMe;
 
-  // onSubmit() {
-  //   if (this.loginForm.invalid) {
-  //     this.toastService.warning('Preencha email e senha válidos');
-  //     return;
-  //   }
+    this.loginService.login(email, password).subscribe({
+      next: (res) => {
+        console.log('Login response:', res);
+        this.auth.saveAuth(res, remember);
+        const role = res?.user?.role;
 
-  //   const { email, password } = this.loginForm.value;
+        setTimeout(() => {
+          if (role) {
+            this.router.navigate([role === 'ADMIN' ? '/admin' : '/dashboard']);
+          } else {
 
-  //   this.loginService.login(email, password).subscribe({
-  //     next: (res) => {
-  //       // res vem do backend: { token, expiresInMs, user: { id, name, email, role }, tokenType }
-  //       const role = res.user.role;
-  //       this.toastService.success('Login realizado com sucesso');
-  //       this.router.navigate([role === 'ADMIN' ? '/admin' : '/dashboard']);
-  //     },
-  //     error: (err) => {
-  //       console.error('[Login] erro', err);
-  //       this.toastService.error('Usuário ou senha inválidos');
-  //     }
-  //   });
-  // }
-
-//   onSubmit() {
-//   if (this.loginForm.invalid) return;
-
-//   const { email, password } = this.loginForm.value;
-
-//   this.loginService.login(email!, password!).subscribe({
-//     next: (res) => {
-//       this.toastService.success(`Bem-vindo, ${res.user.name.split(' ')[0]}!`);
-//       const role = res.user.role; // <- vem do backend
-//       this.router.navigateByUrl(role === 'ADMIN' ? '/admin' : '/dashboard');
-//     },
-//     error: () => this.toastService.error('Usuário ou senha inválidos'),
-//   });
-// }
-
-onSubmit() {
-  const { email, password } = this.loginForm.value;
-  // pegue o valor do checkbox "rememberMe" se tiver
-  const remember = !!this.loginForm.value.rememberMe;
-
-  this.loginService.login(email, password).subscribe({
-    next: (res) => {
-      console.log('Login response:', res); // Para debug
-      this.auth.saveAuth(res, remember);   // ⬅️ escolhe session/local
-      
-      // Verificação defensiva para evitar erro
-      const role = res?.user?.role;
-      
-      // Pequeno delay para garantir que o storage foi salvo
-      setTimeout(() => {
-        if (role) {
-          this.router.navigate([role === 'ADMIN' ? '/admin' : '/dashboard']);
-        } else {
-          // Fallback se não tiver role definido
-          console.warn('Role not found in response, redirecting to dashboard');
-          this.router.navigate(['/dashboard']);
-        }
-      }, 100);
-    },
-    error: (err) => {
-      console.error('Login error:', err);
-      this.toastService.error('Usuário ou senha inválidos');
-    }
-  });
-}
+            console.warn('Role not found in response, redirecting to dashboard');
+            this.router.navigate(['/dashboard']);
+          }
+        }, 100);
+      },
+      error: (err) => {
+        console.error('Login error:', err);
+        this.toastService.error('Usuário ou senha inválidos');
+      }
+    });
+  }
 
   navigate() {
     this.router.navigate(['signup']);

@@ -16,6 +16,10 @@ export class MainLayoutComponent {
     private authService: AuthService
   ) {}
 
+  get isAdmin(): boolean {
+    return this.authService.getRole() === 'ADMIN';
+  }
+
   navigateTo(route: string) {
     this.router.navigate([route]);
   }

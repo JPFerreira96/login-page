@@ -4,7 +4,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { ChangePasswordRequest, UpdateUserRequest, User, UserService } from '../../core/services/user.service';
+import { UserService } from '../../core/services/user.service';
+
+import { ChangePasswordRequest } from '../../interface/change-password-request.interface';
+import { UpdateUserRequest } from '../../interface/update-user-request.interface';
+import { User } from '../../interface/user.interface';
 
 @Component({
   selector: 'app-profile',
@@ -26,11 +30,11 @@ export class ProfileComponent implements OnInit {
   success: string = '';
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private userService: UserService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeForms();
@@ -38,27 +42,29 @@ export class ProfileComponent implements OnInit {
   }
 
   private initializeForms(): void {
-    // Form para dados pessoais - apenas email é editável
+    
     this.userForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]]
     });
 
-    // Form para alteração de senha
+    
     this.passwordForm = this.fb.group({
       currentPassword: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]]
+      newPassword: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
 
   loadUser(): void {
     this.loading = true;
     this.error = '';
-    
+
     this.userService.getProfile().subscribe({
       next: (userData: User) => {
         this.user = userData;
-        // Preenche apenas o campo editável (email)
+        
         this.userForm.patchValue({
+          name: userData.name,
           email: userData.email
         });
         this.loading = false;
@@ -80,15 +86,18 @@ export class ProfileComponent implements OnInit {
 
     const updateData: UpdateUserRequest = {
       email: this.userForm.get('email')?.value,
-      name: this.user?.name || ''
+      name: this.userForm.get('name')?.value
     };
 
     this.userService.updateProfile(updateData).subscribe({
-      next: (updatedUser: User) => {
+      next: (updatedUser) => {
         this.user = updatedUser;
-        this.success = 'Email atualizado com sucesso!';
+        this.userForm.patchValue({
+          name: updatedUser.name,
+          email: updatedUser.email
+        });
+        this.success = 'Dados atualizados com sucesso!';
         this.loading = false;
-        // Limpa a mensagem após 3 segundos
         setTimeout(() => this.success = '', 3000);
       },
       error: (error: string) => {
@@ -112,10 +121,9 @@ export class ProfileComponent implements OnInit {
 
     this.userService.changePassword(passwordData).subscribe({
       next: () => {
-        this.success = 'Senha alterada com sucesso!';
         this.passwordForm.reset();
+        this.success = 'Senha alterada com sucesso!';
         this.loading = false;
-        // Limpa a mensagem após 3 segundos
         setTimeout(() => this.success = '', 3000);
       },
       error: (error: string) => {
@@ -129,7 +137,7 @@ export class ProfileComponent implements OnInit {
     if (!this.user) return;
 
     const confirmMessage = `Tem certeza que deseja excluir sua conta permanentemente?\n\nEsta ação não pode ser desfeita e todos os seus dados serão perdidos.`;
-    
+
     if (!confirm(confirmMessage)) return;
 
     this.loading = true;
@@ -154,9 +162,13 @@ export class ProfileComponent implements OnInit {
     this.success = '';
   }
 
-  // Getter para facilitar validações no template
+  
   get emailControl() {
     return this.userForm.get('email');
+  }
+
+  get nameControl() {
+    return this.userForm.get('name');
   }
 
   get currentPasswordControl() {
