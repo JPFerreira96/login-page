@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, effect, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { UserService } from '../../core/services/user.service';
@@ -51,16 +51,6 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
-    
-    effect(() => {
-      const u = this.selectedUser();
-      if (u) {
-        this.updateForm.reset({ email: u.email }, { emitEvent: false });
-        this.passwordForm.reset();
-        this.addCardForm.reset({ nome: '', tipoCartao: 'COMUM' as const });
-        this.activeTab.set('dados');
-      }
-    });
   }
 
   
